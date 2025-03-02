@@ -27,7 +27,7 @@ export async function handleLogin(username: string, password: string) {
     redirect('/home');
 }
 
-export async function handleSignup(username: string, password: string, email: string) {
+export async function handleSignup(username: string, password: string, email: string, bio?: string) {
     try {
         const existingUsername = await User.exists({ username });
         if (existingUsername) return 'username-taken';
@@ -42,7 +42,8 @@ export async function handleSignup(username: string, password: string, email: st
         const newUser = await User.create({
             username,
             password: hashedPassword,
-            email
+            email,
+            bio: bio || "Hi there! I'd love to debate."
         });
         
         // Create session for new user

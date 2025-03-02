@@ -17,27 +17,31 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AnimatedBackground } from "@/components/animated-background"
+import updateUser from '@/lib/actions/profile'
 
 interface ClientProfileProps {
   username: string;
   email: string;
+  bio: string;
+  joinDate: string;
+  numPosts: number;
 }
 
-export default function ClientProfile({ username, email }: ClientProfileProps) {
+export default function ClientProfile({ username, email, bio, joinDate, numPosts }: ClientProfileProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [userProfile, setUserProfile] = useState({
     username,
     email,
-    bio: "Just someone who loves a good debate. Always looking for the truth in different perspectives.",
-    joined: "March 2025",
-    debatesParticipated: 8,
+    bio: bio || 'No bio found',
+    joined: new Date(joinDate),
+    debatesParticipated: numPosts,
     debatesWon: 5
   })
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
+    await updateUser(userProfile.username, userProfile.email, userProfile.bio);
     setIsEditing(false)
-    // In a real app, you would save changes to the backend here
   }
 
   return (
@@ -87,7 +91,9 @@ export default function ClientProfile({ username, email }: ClientProfileProps) {
                   <User className="h-16 w-16 text-orange-500" />
                 </div>
                 <h2 className="text-lg font-semibold">{userProfile.username}</h2>
-                <p className="text-sm text-muted-foreground">Joined {userProfile.joined}</p>
+                <p className="text-sm text-muted-foreground">Joined {userProfile.joined.toLocaleDateString(undefined, {
+                  month: 'long', year: 'numeric'
+                })}</p>
                 
                 <div className="grid grid-cols-2 gap-4 w-full mt-4">
                   <div className="text-center p-3 bg-background rounded-md border">
