@@ -211,9 +211,9 @@ export default function HomePage() {
         </div>
         
         <div className="space-y-4">
-          {visibleData.map((debate) => (
+          {visibleData.map((debate, index) => (
             <DebateCard
-              key={debate.id}
+              key={debate.uniqueId || `${debate.id}-${index}`}
               id={debate.id}
               title={debate.title}
               summary={debate.summary}
