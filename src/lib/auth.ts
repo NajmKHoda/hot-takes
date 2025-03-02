@@ -12,7 +12,7 @@ export async function handleLogin(username: string, password: string) {
         const user = await User
             .findOne({ username })
             .select('password')
-            .lean();
+            .lean() as any;
         if (!user) return 'invalid-credentials';
         
         const passwordsMatch = await bcrypt.compare(password, user.password);

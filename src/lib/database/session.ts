@@ -14,4 +14,4 @@ export const sessionSchema: Schema<ISession> = new Schema({
     createdAt: { type: Date, default: Date.now, expires: SESSION_DURATION },
 });
 
-export const Session = mongoose.model<ISession>('Session', sessionSchema);
+export const Session = mongoose.models.Session || mongoose.model<ISession>('Session', sessionSchema);
