@@ -3,16 +3,18 @@ import { messageSchema, IMessage } from './message';
 
 export interface IPost extends Document {
     _id: Types.ObjectId,
-    posterId: Types.ObjectId, // user that is posting
-    responderId: Types.ObjectId, // user that responds/picks up (will be $unset if not set)
+    title: string,
+    summary: string,
+    posterIds: Types.ObjectId[],
     messages: IMessage[]
 }
 
 export const postSchema: Schema<IPost> = new Schema(
     {
-        posterId: { type: Schema.ObjectId, ref: 'User', required: true },
-        responderId: { type: Schema.ObjectId, ref: 'User', default: null }, // responderId can be null
-        messages: { type: [messageSchema], required: true }, // Array of messages
+        title: { type: String, required: true },
+        summary: { type: String, required: true },
+        posterIds: { type: [Schema.ObjectId], ref: 'User', default: [] },
+        messages: { type: [messageSchema], required: true, default: [] }, // Array of messages
     }
 );
 
