@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {handleLogin} from "@/lib/auth";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -19,10 +20,21 @@ export function LoginForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 1500)
+    // handle login
+    const form = e.currentTarget
+    const username = form["username"].value
+    const password = form["password"].value
+
+    const error = await handleLogin(username, password)
+    setIsLoading(false)
+    switch (error) {
+      case "invalid-credentials":
+        alert("Invalid credentials")
+        break
+      case "server-error":
+        alert("An error occurred. Please try again")
+        break
+    }
   }
 
   return (

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {handleSignup} from "@/lib/auth";
 
 export function SignupForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -20,10 +21,27 @@ export function SignupForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 1500)
+    // API call
+    const form = e.currentTarget;
+    const email = form["email"].value;
+    const username = form["username"].value;
+    const password = form["password"].value;
+    const error = await handleSignup(username, password, email)
+    setIsLoading(false)
+    let errorMessage;
+    switch (error) {
+      case "username-taken":
+        errorMessage = "Username is already taken";
+        break;
+      case "email-taken":
+        errorMessage = "Email is already taken";
+        break;
+      case "server-error":
+        errorMessage = "An error occurred. Please try again";
+        break;
+    }
+    if (errorMessage)
+      alert(errorMessage)
   }
 
   return (
