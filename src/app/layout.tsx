@@ -14,8 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "H🔥T TAKES",
+  title: "Hot Takes",
   description: "DEBATE. DISCUSS. DECIDE.",
+  icons: {
+    icon: [
+      {
+        url: "/icons/flame.svg",
+        type: "image/svg+xml",
+      }
+    ],
+  },
 };
 
 export default function RootLayout({
