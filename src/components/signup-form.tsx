@@ -7,7 +7,6 @@ import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {handleSignup} from "@/lib/auth";
@@ -19,25 +18,38 @@ export function SignupForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
 
     // API call
     const form = e.currentTarget;
     const email = form["email"].value;
     const username = form["username"].value;
+    if (username.length > 16 || username.length < 3 || username.includes(" ")) {
+        alert("username must be between 3 and 16 characters long and cannot contain spaces.");
+        return;
+    }
     const password = form["password"].value;
+    const confirmPassword = form["confirm-password"].value;
+    if (password !== confirmPassword) {
+      alert("please match your passwords.");
+      return;
+    }
+    if (password.length < 8) {
+        alert("password must be at least 8 characters long.");
+        return;
+    }
+    setIsLoading(true)
     const error = await handleSignup(username, password, email)
     setIsLoading(false)
     let errorMessage;
     switch (error) {
       case "username-taken":
-        errorMessage = "Username is already taken";
+        errorMessage = "sorry, but this username is already taken!";
         break;
       case "email-taken":
-        errorMessage = "Email is already taken";
+        errorMessage = "an account with this email already exists!";
         break;
       case "server-error":
-        errorMessage = "An error occurred. Please try again";
+        errorMessage = "sorry, something went wrong on our server. try again later!";
         break;
     }
     if (errorMessage)

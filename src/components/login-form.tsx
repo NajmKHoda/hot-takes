@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {handleLogin} from "@/lib/auth";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -17,14 +18,32 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      // Redirect to home page after successful login
-      window.location.href = "/home"
-    }, 1500)
+    const form = e.currentTarget;
+    const username = form["username"].value;
+    const password = form["password"].value;
+
+    if (password.length < 8) {
+        alert("password must be at least 8 characters long.");
+        return;
+    }
+    if (username < 3 || username > 16 || username.includes(" ")) {
+        alert("username must be between 3 and 16 characters long and cannot contain spaces.");
+        return;
+    }
+    setIsLoading(true)
+    const error = await handleLogin(username, password);
+    setIsLoading(false)
+    let errorMessage;
+    switch (error) {
+      case "invalid-credentials":
+        errorMessage = "invalid credentials. please try again!";
+        break;
+      case "server-error":
+        errorMessage = "sorry, something went wrong on our server. try again later!";
+        break;
+    }
+    alert(errorMessage)
   }
 
   return (
