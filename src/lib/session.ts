@@ -59,7 +59,7 @@ export async function getUser(): Promise<IUser | null> {
         const session = await Session
             .findById(sessionId)
             .populate('user')
-            .lean();
+            .lean() as any;
         return (session?.user || null) as IUser | null;
     } catch (error) {
         return null;
