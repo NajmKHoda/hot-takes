@@ -18,7 +18,7 @@ class Gemini {
         if (!this.genAI)
             throw new Error("Gemini is not connected.");
 
-        await this.generateText(
+        return this.generateText(
             "Analyze the following user message for logical fallacies and misinformation. "
           + "Provide a concise analysis of the user's message, ideally around 3 bullet points or less. "
           + "Do not use * characters for special formatting, only new lines. "
