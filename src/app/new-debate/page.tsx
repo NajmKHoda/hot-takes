@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AnimatedBackground } from "@/components/animated-background"
+import { createDebate } from '@/lib/actions/newDebate'
 
 export default function NewDebatePage() {
   const [debateForm, setDebateForm] = useState({
@@ -32,12 +33,7 @@ export default function NewDebatePage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false)
-      // Redirect to the home page
-      window.location.href = "/home"
-    }, 1500)
+    await createDebate(debateForm.title, debateForm.summary, debateForm.initialMessage);
   }
 
   const isFormValid = () => {
