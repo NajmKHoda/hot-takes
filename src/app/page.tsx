@@ -15,7 +15,7 @@ export default function Home() {
           </div>
         </main>
         <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center text-sm text-muted-foreground">
-          <p>© 2025 HOT TAKES. All rights reserved.</p>
+          <p>© 2025 hot takes. moderated by AI.</p>
         </footer>
       </div>
     </>

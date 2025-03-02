@@ -29,15 +29,15 @@ export function LoginForm() {
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
-          <Input id="username" placeholder="Enter your username" required />
+          <Label htmlFor="username">username</Label>
+          <Input id="username" placeholder="enter your username" required />
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">password</Label>
           </div>
           <div className="relative">
-            <Input id="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" required />
+            <Input id="password" type={showPassword ? "text" : "password"} placeholder="enter your password" required />
             <Button
               type="button"
               variant="ghost"
@@ -60,7 +60,7 @@ export function LoginForm() {
             htmlFor="remember"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Remember me
+            remember me
           </Label>
         </div>
         <Button
@@ -68,14 +68,14 @@ export function LoginForm() {
           className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-[0_0_15px_rgba(249,115,22,0.5)] hover:shadow-[0_0_25px_rgba(249,115,22,0.7)] focus:shadow-[0_0_30px_rgba(249,115,22,0.8)]"
           disabled={isLoading}
         >
-          {isLoading ? "Signing in..." : "Sign in"}
+          {isLoading ? "signing in..." : "sign in"}
         </Button>
       </form>
       <div className="text-center text-sm">
         <p className="text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          care to join us?{" "}
           <Link href="/signup" className="text-primary underline-offset-4 hover:underline">
-            Sign up
+            sign up
           </Link>
         </p>
       </div>
