@@ -28,6 +28,10 @@ export default function Profile() {
     debatesParticipated: 8,
     debatesWon: 5
   })
+  const [settings, setSettings] = useState({
+    notifications: true,
+    privacy: false
+  })
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault()
@@ -181,8 +185,18 @@ export default function Profile() {
                         <p className="font-medium">notifications</p>
                         <p className="text-sm text-muted-foreground">Receive email notifications</p>
                       </div>
-                      <div className="w-12 h-6 bg-orange-500 rounded-full relative cursor-pointer">
-                        <div className="w-5 h-5 bg-white rounded-full absolute right-1 top-0.5"></div>
+                      <div 
+                        className={`w-12 h-6 ${settings.notifications ? 'bg-orange-500' : 'bg-gray-300 dark:bg-gray-700'} rounded-full relative cursor-pointer transition-colors duration-200`}
+                        onClick={() => {
+                          setSettings({...settings, notifications: !settings.notifications});
+                          // In a real app, you would save this setting to the backend
+                        }}
+                        role="switch"
+                        aria-checked={settings.notifications}
+                      >
+                        <div 
+                          className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transform transition-transform duration-200 ${settings.notifications ? 'right-1' : 'left-1'}`}
+                        ></div>
                       </div>
                     </div>
                     
@@ -191,8 +205,18 @@ export default function Profile() {
                         <p className="font-medium">privacy</p>
                         <p className="text-sm text-muted-foreground">Make profile visible to everyone</p>
                       </div>
-                      <div className="w-12 h-6 bg-gray-300 dark:bg-gray-700 rounded-full relative cursor-pointer">
-                        <div className="w-5 h-5 bg-white rounded-full absolute left-1 top-0.5"></div>
+                      <div 
+                        className={`w-12 h-6 ${settings.privacy ? 'bg-orange-500' : 'bg-gray-300 dark:bg-gray-700'} rounded-full relative cursor-pointer transition-colors duration-200`}
+                        onClick={() => {
+                          setSettings({...settings, privacy: !settings.privacy});
+                          // In a real app, you would save this setting to the backend
+                        }}
+                        role="switch"
+                        aria-checked={settings.privacy}
+                      >
+                        <div 
+                          className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transform transition-transform duration-200 ${settings.privacy ? 'right-1' : 'left-1'}`}
+                        ></div>
                       </div>
                     </div>
                   </div>
