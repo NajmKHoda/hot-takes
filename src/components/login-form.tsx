@@ -22,6 +22,8 @@ export function LoginForm() {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false)
+      // Redirect to home page after successful login
+      window.location.href = "/home"
     }, 1500)
   }
 
