@@ -14,6 +14,19 @@ class Gemini {
         }
     }
 
+    public static async analyzeUserMessage(message: string) {
+        if (!this.genAI)
+            throw new Error("Gemini is not connected.");
+
+        await this.generateText(
+            "Analyze the following user message for logical fallacies and misinformation. "
+          + "Provide a concise analysis of the user's message, ideally around 3 bullet points or less. "
+          + "Do not use * characters for special formatting, only new lines. "
+          + "If the user's argument is logically sound, simply return only the following text: 'argument-sound'. "
+          + "User message: " + message
+        )
+    }
+
     public static async generateText(prompt: string) {
         if (!this.genAI)
             throw new Error("Gemini is not connected.");
