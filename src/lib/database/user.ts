@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
-import { postSchema, IPost } from './post';
+import mongoose, {Document, Schema, Types} from 'mongoose';
+import {IPost, postSchema} from './post';
 
 export interface IUser extends Document {
     _id: Types.ObjectId,
@@ -13,12 +13,12 @@ export interface IUser extends Document {
 
 export const userSchema: Schema<IUser> = new Schema(
     {
-        username: { type: String, required: true },
-        password: { type: String, required: true },
-        bio: { type: String, default: "Hi there! I'd love to debate." },
-        email: { type: String, required: true },
-        posts: { type: [postSchema], default: [] },
-        joinDate: { type: Date, default: Date.now }
+        username: {type: String, required: true},
+        password: {type: String, required: true},
+        bio: {type: String, default: "Hi there! I'd love to debate."},
+        email: {type: String, required: true},
+        posts: {type: [postSchema], default: []},
+        joinDate: {type: Date, default: Date.now}
     }
 );
 

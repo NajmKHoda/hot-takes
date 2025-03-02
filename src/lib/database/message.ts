@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, {Document, Schema} from 'mongoose';
 
 export interface IMessage extends Document {
     senderId: mongoose.Types.ObjectId,
@@ -10,11 +10,11 @@ export interface IMessage extends Document {
 
 export const messageSchema: Schema<IMessage> = new Schema(
     {
-        senderId: { type: Schema.ObjectId, ref: 'User', required: true },
-        contents: { type: String, required: true },
-        timestamp: { type: Date, required: true },
-        likes: { type: Number, default: 0 },
-        side: { type: String, required: true }
+        senderId: {type: Schema.ObjectId, ref: 'User', required: true},
+        contents: {type: String, required: true},
+        timestamp: {type: Date, required: true},
+        likes: {type: Number, default: 0},
+        side: {type: String, required: true}
     },
-    { _id: false }
+    {_id: false}
 );

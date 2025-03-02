@@ -20,10 +20,10 @@ class Gemini {
 
         return this.generateText(
             "Analyze the following user message for logical fallacies and misinformation. "
-          + "Provide a concise analysis of the user's message, ideally around 3 bullet points or less. "
-          + "Do not use * characters for special formatting, only new lines. "
-          + "If the user's argument is logically sound, simply return only the following text: 'argument-sound'. "
-          + "User message: " + message
+            + "Provide a concise analysis of the user's message, ideally around 3 bullet points or less. "
+            + "Do not use * characters for special formatting, only new lines. "
+            + "If the user's argument is logically sound, simply return only the following text: 'argument-sound'. "
+            + "User message: " + message
         )
     }
 
@@ -32,7 +32,7 @@ class Gemini {
             throw new Error("Gemini is not connected.");
 
         try {
-            const model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+            const model = this.genAI.getGenerativeModel({model: "gemini-2.0-flash"});
             const result = await model.generateContent(prompt);
             const response = result.response;
             return response.text();

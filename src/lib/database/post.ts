@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
-import { messageSchema, IMessage } from './message';
+import mongoose, {Document, Schema, Types} from 'mongoose';
+import {IMessage, messageSchema} from './message';
 
 export interface IPost extends Document {
     _id: Types.ObjectId,
@@ -11,10 +11,10 @@ export interface IPost extends Document {
 
 export const postSchema: Schema<IPost> = new Schema(
     {
-        title: { type: String, required: true },
-        summary: { type: String, required: true },
-        posterIds: { type: [Schema.ObjectId], ref: 'User', default: [] },
-        messages: { type: [messageSchema], required: true, default: [] }, // Array of messages
+        title: {type: String, required: true},
+        summary: {type: String, required: true},
+        posterIds: {type: [Schema.ObjectId], ref: 'User', default: []},
+        messages: {type: [messageSchema], required: true, default: []}, // Array of messages
     }
 );
 

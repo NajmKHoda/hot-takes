@@ -1,8 +1,8 @@
 'use server';
 
-import { redirect } from 'next/navigation';
-import {IPost, Post} from '../database/post';
-import { getUser } from '../session';
+import {redirect} from 'next/navigation';
+import {Post} from '../database/post';
+import {getUser} from '../session';
 
 export async function createDebate(title: string, summary: string, firstMessage: string) {
     const user = await getUser();
