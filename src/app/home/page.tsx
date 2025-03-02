@@ -39,8 +39,7 @@ export default function HomePage() {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(debate => 
         debate.title.toLowerCase().includes(query) || 
-        debate.summary.toLowerCase().includes(query) ||
-        debate.topic.toLowerCase().includes(query)
+        debate.summary.toLowerCase().includes(query)
       )
     }
     
@@ -213,12 +212,11 @@ export default function HomePage() {
         
         <div className="space-y-4">
           {visibleData.map((debate) => (
-            <DebateCard 
-              key={debate.uniqueId || debate.id} 
+            <DebateCard
+              key={debate.id}
               id={debate.id}
               title={debate.title}
               summary={debate.summary}
-              topic={debate.topic}
               likes={debate.likes}
               comments={debate.comments}
               createdAt={debate.createdAt}

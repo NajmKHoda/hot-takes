@@ -29,12 +29,26 @@ interface Message {
   side?: "defend" | "destroy"
 }
 
+interface Debate {
+  id: string
+  title: string
+  summary: string
+  createdAt: Date
+  likes: number
+  comments: number
+  messages: Message[]
+}
+
 export default function DebatePage() {
   const params = useParams()
   const id = params.id as string
   
-  const [debate, setDebate] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [debate, setDebate] = useState<Debate | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [newMessage, setNewMessage] = useState("")
+  const [likeCount, setLikeCount] = useState(0)
+  const [hasLiked, setHasLiked] = useState(false)
   const [activeSide, setActiveSide] = useState<"defend" | "destroy">("defend")
   const [defendMessage, setDefendMessage] = useState("")
   const [destroyMessage, setDestroyMessage] = useState("")
@@ -44,11 +58,12 @@ export default function DebatePage() {
   const [destroyMessages, setDestroyMessages] = useState<Message[]>([])
   
   useEffect(() => {
-    // In a real app, you would fetch the debate from an API
-    const foundDebate = mockDebates.find(debate => debate.id === id)
+    // In a real app, this would be an API call
+    const foundDebate = mockDebates.find(d => d.id === id)
     
     if (foundDebate) {
       setDebate(foundDebate)
+      setLikeCount(foundDebate.likes)
       
       // Divide existing messages into defend/destroy sides
       // For mock data, we'll consider even indexed messages as defend and odd as destroy
@@ -65,15 +80,17 @@ export default function DebatePage() {
       
       setDefendMessages(defend)
       setDestroyMessages(destroy)
+    } else {
+      setError("Debate not found")
     }
     
-    setIsLoading(false)
+    setLoading(false)
   }, [id])
   
   const handleSubmitDefend = (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!defendMessage.trim()) return
+    if (!defendMessage.trim() || !debate) return
     
     const newMsg: Message = {
       id: `new-${Date.now()}-defend`,
@@ -90,7 +107,7 @@ export default function DebatePage() {
   const handleSubmitDestroy = (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!destroyMessage.trim()) return
+    if (!destroyMessage.trim() || !debate) return
     
     const newMsg: Message = {
       id: `new-${Date.now()}-destroy`,
@@ -104,8 +121,25 @@ export default function DebatePage() {
     setDestroyMessage("")
   }
   
-  if (isLoading) {
+  const handleLike = () => {
+    if (!hasLiked) {
+      setLikeCount(prev => prev + 1)
+      setHasLiked(true)
+    } else {
+      setLikeCount(prev => prev - 1)
+      setHasLiked(false)
+    }
+    
+    // In a real app, you would make an API call here to update the like count
+    // Example: api.updateDebateLikes(id, hasLiked ? 'unlike' : 'like')
+  }
+  
+  if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  }
+  
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center">{error}</div>
   }
   
   if (!debate) {
@@ -138,9 +172,14 @@ export default function DebatePage() {
                 <Clock className="h-4 w-4 mr-1" />
                 <span className="mr-4">{formatDistanceToNow(debate.createdAt, { addSuffix: true })}</span>
               </div>
-              <div className="flex items-center">
-                <ArrowUpCircle className="h-4 w-4 mr-1" />
-                <span className="mr-4">{debate.likes}</span>
+              <div 
+                className="flex items-center cursor-pointer hover:text-orange-500 transition-colors"
+                onClick={handleLike}
+              >
+                <ArrowUpCircle 
+                  className={`h-4 w-4 mr-1 ${hasLiked ? 'text-orange-500' : ''}`} 
+                />
+                <span className={`mr-4 ${hasLiked ? 'text-orange-500' : ''}`}>{likeCount}</span>
               </div>
               <div className="flex items-center">
                 <MessageCircle className="h-4 w-4 mr-1" />
