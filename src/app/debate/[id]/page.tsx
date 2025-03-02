@@ -19,31 +19,14 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { AnimatedBackground } from "@/components/animated-background"
-import { mockDebates } from "@/data/mock-debates"
-
-interface Message {
-  id: string
-  userId: string
-  content: string
-  timestamp: Date
-  side?: "defend" | "destroy"
-}
-
-interface Debate {
-  id: string
-  title: string
-  summary: string
-  createdAt: Date
-  likes: number
-  comments: number
-  messages: Message[]
-}
+import {IMessage, IPost} from "@/lib/database";
+import {loadDebate} from "@/lib/actions/newDebate";
 
 export default function DebatePage() {
   const params = useParams()
   const id = params.id as string
   
-  const [debate, setDebate] = useState<Debate | null>(null)
+  const [debate, setDebate] = useState<IPost | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [newMessage, setNewMessage] = useState("")
@@ -54,48 +37,40 @@ export default function DebatePage() {
   const [destroyMessage, setDestroyMessage] = useState("")
   
   // Messages for both sides
-  const [defendMessages, setDefendMessages] = useState<Message[]>([])
-  const [destroyMessages, setDestroyMessages] = useState<Message[]>([])
+  const [defendMessages, setDefendMessages] = useState<IMessage[]>([])
+  const [destroyMessages, setDestroyMessages] = useState<IMessage[]>([])
   
   useEffect(() => {
     // In a real app, this would be an API call
-    const foundDebate = mockDebates.find(d => d.id === id)
-    
-    if (foundDebate) {
-      setDebate(foundDebate)
-      setLikeCount(foundDebate.likes)
-      
-      // Divide existing messages into defend/destroy sides
-      // For mock data, we'll consider even indexed messages as defend and odd as destroy
-      const defend: Message[] = []
-      const destroy: Message[] = []
-      
-      foundDebate.messages.forEach((msg, index) => {
-        if (index % 2 === 0) {
-          defend.push({...msg, side: "defend"})
-        } else {
-          destroy.push({...msg, side: "destroy"})
-        }
-      })
-      
-      setDefendMessages(defend)
-      setDestroyMessages(destroy)
-    } else {
-      setError("Debate not found")
+    async function load() {
+      const foundDebate = await loadDebate(id)
+
+      if (foundDebate) {
+        return JSON.parse(foundDebate) as IPost
+      } else {
+        setError("Debate not found")
+      }
+
+      setLoading(false)
     }
-    
-    setLoading(false)
+    load().then((debate) => {
+        if (debate) {
+            setDebate(debate)
+            //setLikeCount(debate) TODO
+            //setDefendMessages(debate.messages.filter(m => m.side === "defend"))
+            //setDestroyMessages(debate.messages.filter(m => m.side === "destroy"))
+        }
+    })
   }, [id])
   
   const handleSubmitDefend = (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!defendMessage.trim() || !debate) return
-    
-    const newMsg: Message = {
-      id: `new-${Date.now()}-defend`,
-      userId: "currentUser",
-      content: defendMessage,
+    // TODO HOW TO GET ID
+    const newMsg: IMessage = {
+      senderId: "",
+      contents: defendMessage,
       timestamp: new Date(),
       side: "defend"
     }

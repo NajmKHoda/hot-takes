@@ -32,7 +32,7 @@ export function DebateCard({
   comments,
   createdAt
 }: DebateCardProps) {
-  const timeAgo = formatDistanceToNow(createdAt, { addSuffix: true })
+  const timeAgo = formatDistanceToNow(createdAt ?? 0, { addSuffix: true })
   const [likeCount, setLikeCount] = useState(likes)
   const [hasLiked, setHasLiked] = useState(false)
   

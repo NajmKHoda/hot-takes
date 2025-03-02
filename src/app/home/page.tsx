@@ -18,54 +18,52 @@ import { DebateCard } from "@/components/debate-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll"
-import { mockDebates } from "@/data/mock-debates"
 import { AnimatedBackground } from "@/components/animated-background"
+import {loadDebates} from "@/lib/actions/newDebate";
+import {IPost} from '@/lib/database/post'
 
 
 type SortOption = "popular" | "recent" | "trending"
 
 export default function HomePage() {
   const [sortOption, setSortOption] = useState<SortOption>("popular")
-  const [sortedDebates, setSortedDebates] = useState(mockDebates)
+  const [sortedDebates, setSortedDebates] = useState<IPost[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [showMobileSearch, setShowMobileSearch] = useState(false)
-  
+
+  // popular based on upvotes
+  // trending based on recent activity
+  // latest based on creation date
+
   // Filter and sort debates based on search query and selected option
   useEffect(() => {
-    let filtered = [...mockDebates]
-    
-    // Filter by search query if one exists
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(debate => 
-        debate.title.toLowerCase().includes(query) || 
-        debate.summary.toLowerCase().includes(query)
-      )
+    async function filterDebates() {
+      const json = await loadDebates();
+      const filtered = [...JSON.parse(json)];
+      if (sortOption === "popular") {
+        filtered.sort((a, b) => b.likes - a.likes)
+      } else if (sortOption === "recent") {
+        filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      } else if (sortOption === "trending") {
+        // Trending combines recency and popularity
+        filtered.sort((a, b) => {
+          const recencyScoreA = Date.now() - a.createdAt.getTime()
+          const recencyScoreB = Date.now() - b.createdAt.getTime()
+          const popularityScoreA = a.likes + a.comments * 2  // Comments weighted more for "trending"
+          const popularityScoreB = b.likes + b.comments * 2
+
+          // Lower recency score (more recent) is better
+          const scoreA = popularityScoreA / (Math.sqrt(recencyScoreA))
+          const scoreB = popularityScoreB / (Math.sqrt(recencyScoreB))
+
+          return scoreB - scoreA
+        })
+      }
+      return filtered;
+
     }
-    
-    // Sort the filtered debates
-    
-    if (sortOption === "popular") {
-      filtered.sort((a, b) => b.likes - a.likes)
-    } else if (sortOption === "recent") {
-      filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    } else if (sortOption === "trending") {
-      // Trending combines recency and popularity
-      filtered.sort((a, b) => {
-        const recencyScoreA = Date.now() - a.createdAt.getTime()
-        const recencyScoreB = Date.now() - b.createdAt.getTime()
-        const popularityScoreA = a.likes + a.comments * 2  // Comments weighted more for "trending"
-        const popularityScoreB = b.likes + b.comments * 2
-        
-        // Lower recency score (more recent) is better
-        const scoreA = popularityScoreA / (Math.sqrt(recencyScoreA))
-        const scoreB = popularityScoreB / (Math.sqrt(recencyScoreB))
-        
-        return scoreB - scoreA
-      })
-    }
-    
-    setSortedDebates(filtered)
+
+    filterDebates().then((filtered) => setSortedDebates(filtered));
   }, [sortOption, searchQuery])
   
   const { visibleData, isLoading, hasMore } = useInfiniteScroll({

@@ -13,7 +13,7 @@ export interface Debate {
   createdAt: Date
 }
 
-export const mockDebates: Debate[] = [
+const mockDebates: Debate[] = [
   {
     id: "1",
     title: "are NFTs actually valuable or just a trend?",
