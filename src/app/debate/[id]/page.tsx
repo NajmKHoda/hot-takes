@@ -7,7 +7,6 @@ import {
   ArrowLeft, 
   ArrowUpCircle,
   MessageCircle, 
-  Sparkles, 
   Clock,
   Shield,
   Flame,
@@ -136,10 +135,6 @@ export default function DebatePage() {
             
             <div className="flex items-center mb-4 text-sm text-muted-foreground">
               <div className="flex items-center">
-                <Sparkles className="h-4 w-4 mr-1" />
-                <span className="mr-4 capitalize">{debate.topic}</span>
-              </div>
-              <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
                 <span className="mr-4">{formatDistanceToNow(debate.createdAt, { addSuffix: true })}</span>
               </div>
@@ -163,7 +158,7 @@ export default function DebatePage() {
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
                   <h2 className="font-semibold flex items-center text-blue-600 dark:text-blue-400 mb-2">
                     <Shield className="mr-2 h-4 w-4" />
-                    defend this take
+                    DEFEND THIS TAKE
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     Arguments that support the hot take. Make your case for why this position is correct.
@@ -207,7 +202,7 @@ export default function DebatePage() {
                       disabled={!defendMessage.trim()}
                     >
                       <Send className="mr-2 h-4 w-4" />
-                      Defend
+                      DEFEND
                     </Button>
                   </div>
                 </form>
@@ -218,7 +213,7 @@ export default function DebatePage() {
                 <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-md">
                   <h2 className="font-semibold flex items-center text-red-600 dark:text-red-400 mb-2">
                     <Flame className="mr-2 h-4 w-4" />
-                    destroy this take
+                    DESTROY THIS TAKE
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     Arguments that challenge the hot take. Explain why this position is flawed or incorrect.
@@ -262,7 +257,7 @@ export default function DebatePage() {
                       disabled={!destroyMessage.trim()}
                     >
                       <Send className="mr-2 h-4 w-4" />
-                      Destroy
+                      DESTROY
                     </Button>
                   </div>
                 </form>

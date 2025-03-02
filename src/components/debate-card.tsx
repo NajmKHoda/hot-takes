@@ -6,8 +6,7 @@ import {
   ArrowUpCircle, 
   MessageCircle, 
   Clock, 
-  Swords,
-  Sparkles
+  Swords
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -18,7 +17,7 @@ export interface DebateCardProps {
   id: string
   title: string
   summary: string
-  topic: string
+  topic?: string
   likes: number
   comments: number
   createdAt: Date
@@ -45,10 +44,6 @@ export function DebateCard({
           <div className="flex items-center">
             <Swords className="h-4 w-4 mr-1" />
             <span className="mr-4">active debate</span>
-          </div>
-          <div className="flex items-center">
-            <Sparkles className="h-4 w-4 mr-1" />
-            <span className="mr-4">{topic}</span>
           </div>
           <Clock className="h-4 w-4 mr-1" />
           <span>{timeAgo}</span>
