@@ -2,7 +2,6 @@ export interface Debate {
   id: string
   title: string
   summary: string
-  topic: string
   messages: {
     id: string
     userId: string
@@ -19,7 +18,6 @@ export const mockDebates: Debate[] = [
     id: "1",
     title: "are NFTs actually valuable or just a trend?",
     summary: "The debate centers on whether NFTs represent genuine value or are merely a passing trend. One participant argues that NFTs create artificial scarcity in digital assets with no inherent value, while the other contends they represent a legitimate evolution of ownership in the digital age.",
-    topic: "cryptocurrency",
     messages: [
       {
         id: "1-msg1",
@@ -42,7 +40,6 @@ export const mockDebates: Debate[] = [
     id: "2",
     title: "is remote work more productive than traditional office work?",
     summary: "The debate explores productivity differences between remote and traditional office work. One participant argues remote work increases productivity through flexibility and reduced commute stress, while the other believes in-person collaboration provides better communication and stronger work culture.",
-    topic: "work",
     messages: [
       {
         id: "2-msg1",
@@ -65,7 +62,6 @@ export const mockDebates: Debate[] = [
     id: "3",
     title: "does AI art threaten human creativity?",
     summary: "This debate addresses whether AI art tools represent a threat to human creativity and the art world. One side argues AI merely automates technical aspects while humans retain creative direction, while the other contends AI devalues human artistic skill and threatens artists' livelihoods.",
-    topic: "artificial intelligence",
     messages: [
       {
         id: "3-msg1",
@@ -88,7 +84,6 @@ export const mockDebates: Debate[] = [
     id: "4",
     title: "is cryptocurrency the future of money?",
     summary: "The debate focuses on whether cryptocurrency will become the dominant form of money. One participant argues crypto solves problems with traditional banking and offers better financial sovereignty, while the other points to volatility, environmental concerns, and regulatory challenges.",
-    topic: "cryptocurrency",
     messages: [
       {
         id: "4-msg1",
@@ -111,7 +106,6 @@ export const mockDebates: Debate[] = [
     id: "5",
     title: "should social media platforms be regulated like utilities?",
     summary: "This debate considers whether major social media platforms should be regulated as public utilities. One side argues their essential role in modern communication warrants regulation to ensure fairness and reduce harm, while the other contends government regulation would stifle innovation and potentially enable censorship.",
-    topic: "technology",
     messages: [
       {
         id: "5-msg1",
@@ -134,7 +128,6 @@ export const mockDebates: Debate[] = [
     id: "6",
     title: "is vegetarianism the most ethical diet?",
     summary: "The debate examines whether vegetarianism represents the most ethical dietary choice. One participant argues vegetarianism minimizes animal suffering and environmental impact, while the other suggests ethical considerations are more nuanced, involving cultural, economic, and health factors beyond animal welfare.",
-    topic: "food",
     messages: [
       {
         id: "6-msg1",
@@ -157,7 +150,6 @@ export const mockDebates: Debate[] = [
     id: "7",
     title: "should college be free for all students?",
     summary: "This debate centers on whether higher education should be provided free of charge. One side argues free college would increase access to education and social mobility while reducing student debt, while the other contends it would be financially unsustainable and potentially devalue degrees.",
-    topic: "education",
     messages: [
       {
         id: "7-msg1",
@@ -180,7 +172,6 @@ export const mockDebates: Debate[] = [
     id: "8",
     title: "is space exploration worth the cost?",
     summary: "The debate discusses whether the substantial financial investment in space exploration is justified. One participant emphasizes technological innovations, scientific discoveries, and humanity's future, while the other argues these resources could better address immediate problems on Earth.",
-    topic: "science",
     messages: [
       {
         id: "8-msg1",
