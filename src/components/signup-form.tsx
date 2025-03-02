@@ -48,20 +48,20 @@ export function SignupForm() {
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="Enter your email" required />
+          <Label htmlFor="email">email</Label>
+          <Input id="email" type="email" placeholder="enter your email" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
-          <Input id="username" placeholder="Choose a username" required />
+          <Label htmlFor="username">username</Label>
+          <Input id="username" placeholder="choose a username" required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">password</Label>
           <div className="relative">
             <Input 
               id="password" 
               type={showPassword ? "text" : "password"} 
-              placeholder="Create a password" 
+              placeholder="create a password" 
               required 
             />
             <Button
@@ -81,12 +81,12 @@ export function SignupForm() {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm Password</Label>
+          <Label htmlFor="confirm-password">confirm password</Label>
           <div className="relative">
             <Input 
               id="confirm-password" 
               type={showConfirmPassword ? "text" : "password"} 
-              placeholder="Confirm your password" 
+              placeholder="confirm your password" 
               required 
             />
             <Button
@@ -110,14 +110,14 @@ export function SignupForm() {
           className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-[0_0_15px_rgba(249,115,22,0.5)] hover:shadow-[0_0_25px_rgba(249,115,22,0.7)] focus:shadow-[0_0_30px_rgba(249,115,22,0.8)]"
           disabled={isLoading}
         >
-          {isLoading ? "Creating account..." : "Create account"}
+          {isLoading ? "creating account..." : "create account"}
         </Button>
       </form>
       <div className="text-center text-sm">
         <p className="text-muted-foreground">
-          Already have an account?{" "}
+          already know us?{" "}
           <Link href="/" className="text-primary underline-offset-4 hover:underline">
-            Sign in
+            sign in
           </Link>
         </p>
       </div>
