@@ -1,16 +1,18 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IMessage extends Document {
-    senderId: mongoose.Types.ObjectId,
-    contents: string
-    timestamp: Date
+    senderId: mongoose.Types.ObjectId;
+    contents: string;
+    timestamp: Date;
+    side: 'defense' | 'offense';
 }
 
 export const messageSchema: Schema<IMessage> = new Schema(
     {
         senderId: { type: Schema.ObjectId, ref: 'User', required: true },
         contents: { type: String, required: true },
-        timestamp: { type: Date, required: true }
+        timestamp: { type: Date, required: true },
+        side: { type: String, enum: ['defense', 'offense'], required: true }
     },
     { _id: false }
 );

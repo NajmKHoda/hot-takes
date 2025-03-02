@@ -15,7 +15,8 @@ export async function createDebate(title: string, summary: string, firstMessage:
         messages: [{
             senderId: user._id,
             contents: firstMessage,
-            timestamp: new Date()
+            timestamp: new Date(),
+            side: 'offense'
         }]
     });
 
