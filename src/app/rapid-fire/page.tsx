@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Zap, Send, User, MessageSquare, Plus, Users, History, Clock, CalendarDays } from "lucide-react"
+import { ArrowLeft, Zap, Send, User, MessageSquare, Plus, Users } from "lucide-react"
 
 import { HotTakesLogo } from "@/components/hot-takes-logo"
 import { Button } from "@/components/ui/button"
@@ -10,8 +10,6 @@ import { Input } from "@/components/ui/input"
 import { AnimatedBackground } from "@/components/animated-background"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { DebateCard } from "@/components/debate-card"
 
 // Sample active debate topics that users can join - each with exactly 1 person waiting
 const activeTopics = [
@@ -64,75 +62,6 @@ const topicSuggestions = [
   "Is social media helping or hurting society?"
 ]
 
-// Sample past rapid fire debates
-const pastDebates = [
-  {
-    id: "past-1",
-    title: "Is AI development moving too fast?",
-    summary: "A heated 3-minute debate on AI safety and innovation speed",
-    topic: "technology",
-    participantCount: 2,
-    messageCount: 12,
-    createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 mins ago
-    participants: [
-      { id: "1", name: "TechOptimist" },
-      { id: "2", name: "SafetyFirst" },
-    ]
-  },
-  {
-    id: "past-2",
-    title: "Should we colonize Mars?",
-    summary: "Discussing if resources should go to space colonization over Earth's problems",
-    topic: "science",
-    participantCount: 2,
-    messageCount: 14,
-    createdAt: new Date(Date.now() - 1000 * 60 * 55), // 55 mins ago
-    participants: [
-      { id: "3", name: "SpaceX_Fan" },
-      { id: "4", name: "EarthFirst" },
-    ]
-  },
-  {
-    id: "past-3",
-    title: "Is a four-day work week better?",
-    summary: "Debating productivity and work-life balance in shorter work weeks",
-    topic: "work",
-    participantCount: 2,
-    messageCount: 10,
-    createdAt: new Date(Date.now() - 1000 * 60 * 120), // 2 hrs ago
-    participants: [
-      { id: "5", name: "WorkReformer" },
-      { id: "6", name: "Traditionalist" },
-    ]
-  },
-  {
-    id: "past-4",
-    title: "Should cryptocurrencies be more regulated?",
-    summary: "Exchange of views on government oversight vs. decentralization",
-    topic: "finance",
-    participantCount: 2,
-    messageCount: 16,
-    createdAt: new Date(Date.now() - 1000 * 60 * 180), // 3 hrs ago
-    participants: [
-      { id: "7", name: "CryptoLibertarian" },
-      { id: "8", name: "RegulationAdvocate" },
-    ]
-  },
-  {
-    id: "past-5",
-    title: "Is social media good for society?",
-    summary: "Rapid-fire exchange on the benefits and harms of social media platforms",
-    topic: "society",
-    participantCount: 2,
-    messageCount: 13,
-    createdAt: new Date(Date.now() - 1000 * 60 * 240), // 4 hrs ago
-    participants: [
-      { id: "9", name: "DigitalOptimist" },
-      { id: "10", name: "UnpluggedLife" },
-    ]
-  }
-]
-
 export default function RapidFirePage() {
   const [currentTopic, setCurrentTopic] = useState("")
   const [customTopic, setCustomTopic] = useState("")
@@ -150,21 +79,6 @@ export default function RapidFirePage() {
   const [timeLeft, setTimeLeft] = useState(180)
   const [debateStarted, setDebateStarted] = useState(false)
   const [activeTab, setActiveTab] = useState("create")
-  
-  // Format the relative time for past debates
-  const formatRelativeTime = (date: Date) => {
-    const now = new Date()
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
-    
-    if (diffInMinutes < 1) return 'just now'
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`
-    
-    const diffInHours = Math.floor(diffInMinutes / 60)
-    if (diffInHours < 24) return `${diffInHours}h ago`
-    
-    const diffInDays = Math.floor(diffInHours / 24)
-    return `${diffInDays}d ago`
-  }
 
   // Initialize the custom topic field with a suggestion
   useEffect(() => {
@@ -390,18 +304,14 @@ export default function RapidFirePage() {
               </div>
               
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid grid-cols-3 mb-6">
+                <TabsList className="grid grid-cols-2 mb-6">
                   <TabsTrigger value="create" className="flex items-center">
-                    <Plus className="mr-1 h-4 w-4" />
-                    Create
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Topic
                   </TabsTrigger>
                   <TabsTrigger value="join" className="flex items-center">
-                    <Users className="mr-1 h-4 w-4" />
-                    Join
-                  </TabsTrigger>
-                  <TabsTrigger value="recent" className="flex items-center">
-                    <History className="mr-1 h-4 w-4" />
-                    Recent
+                    <Users className="mr-2 h-4 w-4" />
+                    Join Topic
                   </TabsTrigger>
                 </TabsList>
                 
@@ -472,40 +382,6 @@ export default function RapidFirePage() {
                     <Zap className="mr-2 h-4 w-4" />
                     join selected topic
                   </Button>
-                </TabsContent>
-                <TabsContent value="recent" className="space-y-6">
-                  <div>
-                    <h2 className="text-sm font-medium mb-2">recent rapid fire debates:</h2>
-                    <p className="text-xs text-muted-foreground mb-4">
-                      View completed 3-minute debates and their outcomes
-                    </p>
-                    
-                    <div className="space-y-4">
-                      {pastDebates.map(debate => (
-                        <DebateCard
-                          key={debate.id}
-                          id={debate.id}
-                          title={debate.title}
-                          summary={debate.summary}
-                          topic={debate.topic}
-                          messageCount={debate.messageCount}
-                          createdAt={debate.createdAt}
-                          participants={debate.participants}
-                          className="border-2 border-white dark:border-white/20"
-                        >
-                          <div className="mt-3 flex items-center justify-between">
-                            <Badge variant="outline" className="bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/20 border-0">
-                              <Zap className="mr-1 h-3 w-3" /> Rapid Fire
-                            </Badge>
-                            <div className="text-xs text-muted-foreground flex items-center">
-                              <Clock className="mr-1 h-3 w-3" />
-                              {formatRelativeTime(debate.createdAt)}
-                            </div>
-                          </div>
-                        </DebateCard>
-                      ))}
-                    </div>
-                  </div>
                 </TabsContent>
               </Tabs>
               

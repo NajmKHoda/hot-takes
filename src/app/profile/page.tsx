@@ -21,9 +21,9 @@ import { AnimatedBackground } from "@/components/animated-background"
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false)
   const [userProfile, setUserProfile] = useState({
-    username: "hotuser123",
-    email: "user@example.com",
-    bio: "Just someone who loves a good debate. Always looking for the truth in different perspectives.",
+    username: "gsag",
+    email: "gsag@ucla.edu",
+    bio: "GGs Im cooked",
     joined: "March 2025",
     debatesParticipated: 8,
     debatesWon: 5
