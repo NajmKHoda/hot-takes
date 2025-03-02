@@ -9,11 +9,11 @@ export function HotTakesLogo({ className }: HotTakesLogoProps) {
     <div className={`flex items-center ${className}`}>
       <div className="flex items-center mr-4">
         <span className="text-3xl font-bold">H</span>
-        <span className="relative mx-1">
+        <span className="relative mx-0.3">
           <span className="text-3xl font-bold opacity-0">O</span>
           <Flame className="absolute inset-0 text-orange-500 w-full h-full" />
         </span>
-        <span className="text-3xl font-bold">T</span>
+        <span className="text-3xl font-bold -ml-0.5">T</span>
       </div>
       <div className="flex items-center">
         <span className="text-3xl font-bold">T</span>
