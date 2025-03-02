@@ -19,10 +19,12 @@ export async function handleLogin(username: string, password: string) {
         if (!passwordsMatch) return 'invalid-credentials';
         
         await createSession(user._id.toString());
-        redirect('/dashboard');
-    } catch {
+    } catch(e) {
+        console.error(e);
         return 'server-error';
     }
+
+    redirect('/dashboard');
 }
 
 export async function handleSignup(username: string, password: string, email: string) {
@@ -45,8 +47,10 @@ export async function handleSignup(username: string, password: string, email: st
         
         // Create session for new user
         await createSession(newUser._id.toString());
-        redirect('/dashboard');
-    } catch {
+    } catch(e) {
+        console.error(e);
         return 'server-error';
     }
+
+    redirect('/dashboard');
 }
