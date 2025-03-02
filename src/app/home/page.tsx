@@ -229,9 +229,9 @@ export default function HomePage() {
             </div>
           )}
           
-          {!hasMore && !isLoading && visibleData.length > 0 && (
-            <div className="text-center py-4 text-muted-foreground">
-              you've reached the end
+          {!isLoading && !hasMore && visibleData.length > 0 && (
+            <div className="text-center py-8 text-muted-foreground text-sm">
+              That's all folks!
             </div>
           )}
         </div>
