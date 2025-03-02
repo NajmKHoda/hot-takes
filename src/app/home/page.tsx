@@ -9,7 +9,8 @@ import {
   Filter, 
   User,
   Search,
-  Zap
+  Zap,
+  PlusCircle
 } from "lucide-react"
 
 import { HotTakesLogo } from "@/components/hot-takes-logo"
@@ -111,6 +112,16 @@ export default function HomePage() {
               </Link>
             </Button>
             <Button
+              className="bg-red-600 hover:bg-red-700 text-white hidden sm:flex"
+              size="sm"
+              asChild
+            >
+              <Link href="/new-debate">
+                <PlusCircle className="mr-1 h-4 w-4" />
+                new debate
+              </Link>
+            </Button>
+            <Button
               variant="ghost"
               size="icon"
               className="sm:hidden"
@@ -127,8 +138,8 @@ export default function HomePage() {
         </div>
       </header>
       
-      {/* Mobile rapid fire button */}
-      <div className="sm:hidden py-2 px-4 border-b">
+      {/* Mobile action buttons */}
+      <div className="sm:hidden py-2 px-4 border-b grid grid-cols-2 gap-2">
         <Button
           className="bg-orange-500 hover:bg-orange-600 text-white w-full"
           asChild
@@ -136,6 +147,15 @@ export default function HomePage() {
           <Link href="/rapid-fire">
             <Zap className="mr-1 h-4 w-4" />
             rapid fire debates
+          </Link>
+        </Button>
+        <Button
+          className="bg-red-600 hover:bg-red-700 text-white w-full"
+          asChild
+        >
+          <Link href="/new-debate">
+            <PlusCircle className="mr-1 h-4 w-4" />
+            new debate
           </Link>
         </Button>
       </div>
