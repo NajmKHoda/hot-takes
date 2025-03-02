@@ -13,31 +13,27 @@ interface SessionPayload {
 }
 
 export async function createSession(userId: string) {
-    try {
-        // Check if user exists
-        const user = await User.exists({ _id: userId });
-        if (!user) return false;
+    // Check if user exists
+    const user = await User.exists({ _id: userId });
+    if (!user) return false;
 
-        // Create new session
-        const session = await Session.create({ user: userId });
+    // Create new session
+    const session = await Session.create({ user: userId });
 
-        // Generate random token
-        const token = await new SignJWT({ sessionId: session._id.toString() })
-            .setProtectedHeader({ alg: 'HS256' })
-            .setIssuedAt()
-            .setIssuer(SESSION_ISSUER)
-            .setExpirationTime(`${SESSION_DURATION}s`)
-            .sign(SESSION_SECRET);
-        
-        const cookieStore = await cookies();
-        cookieStore.set('session', token, {
-            httpOnly: true,
-            sameSite: 'strict',
-            maxAge: SESSION_DURATION,
-        });
-    } catch(e) {
-        console.error(e);
-    }
+    // Generate random token
+    const token = await new SignJWT({ sessionId: session._id.toString() })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setIssuer(SESSION_ISSUER)
+        .setExpirationTime(`${SESSION_DURATION}s`)
+        .sign(SESSION_SECRET);
+    
+    const cookieStore = await cookies();
+    cookieStore.set('session', token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: SESSION_DURATION,
+    });
 }
 
 export async function getUser(): Promise<IUser | null> {
@@ -52,8 +48,9 @@ export async function getUser(): Promise<IUser | null> {
             SESSION_SECRET,
             { issuer: SESSION_ISSUER, algorithms: ['HS256'] }
         );
+
         const { sessionId } = payload as SessionPayload;
-        if (isObjectIdOrHexString(sessionId)) return null;
+        if (!isObjectIdOrHexString(sessionId)) return null;
         
         // Find the session
         const session = await Session
@@ -61,7 +58,8 @@ export async function getUser(): Promise<IUser | null> {
             .populate('user')
             .lean() as any;
         return (session?.user || null) as IUser | null;
-    } catch (error) {
+    } catch (e) {
+        console.error(e);
         return null;
     }
 }

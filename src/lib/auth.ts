@@ -24,7 +24,7 @@ export async function handleLogin(username: string, password: string) {
         return 'server-error';
     }
 
-    redirect('/dashboard');
+    redirect('/home');
 }
 
 export async function handleSignup(username: string, password: string, email: string) {
@@ -52,5 +52,5 @@ export async function handleSignup(username: string, password: string, email: st
         return 'server-error';
     }
 
-    redirect('/dashboard');
+    redirect('/home');
 }
