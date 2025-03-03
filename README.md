@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hot Takes
 
-## Getting Started
+A platform connecting people with local nonprofits based on their interests and location, making community involvement more accessible than ever. Submitted to Hack @ UCI
+SCROLL DOWN FOR QUICK START
 
-First, run the development server:
+## Project Overview 
 
+### Inspiration
+On the way to Seaside in an Uber car, our retired driver's wish to give back more to his community inspired this project. His words, "I wish I could've done more work for my own community," sparked our mission to make community involvement more accessible.
+
+### What it does 
+
+Unity Nonprofits helps users:
+- Find local nonprofits based on zip code and interests
+- Save favorite organizations
+- Get instant access to nonprofit information
+- Connect with community service opportunities
+
+### Technical Stack 
+
+Frontend:
+- Next.js with TypeScript
+- TailwindCSS for styling
+- Session storage for state management
+
+Backend:
+- FastAPI (Python)
+- Melissa API integration
+- Playwright with AgentQL for data scraping
+- nGrok for API tunneling
+
+### Features 
+
+- Zip code-based nonprofit search
+- Interest-based filtering
+- Favorite organization saving
+- Real-time nonprofit information
+- Interactive loading screen with LeBron James highlights
+
+## Quick Start 
+
+### Prerequisites
+- Node.js (v18 or higher)
+- Python 3.8+
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/toomzheng/unity-nonprofits.git
+cd unity-nonprofits
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install frontend dependencies:
+```bash
+cd irvinehacks2
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Install backend dependencies:
+```bash
+cd backend
+pip install -r requirements.txt
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Set up environment variables:
+- Create a `.env` file in the backend directory
+- Add required environment variables:
+```env
+AGENTQL_API_KEY=your_agentql_key
+PERPLEXITY_API_KEY=your_perplexity_key
+EMAIL=your_melissa_email
+PASSWORD='your_melissa_password'
+^ make sure to create an account on melissa first.
+```
 
-## Learn More
+5. Start the development servers:
 
-To learn more about Next.js, take a look at the following resources:
+Frontend:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Backend:
+```bash
+cd backend
+ngrok http 8000
+uvicorn app:app --reload
+python login.py
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Future Development 
 
-## Deploy on Vercel
+- User authentication system
+- Enhanced API efficiency
+- Community blog platform
+- Event organization features
+- Review system for nonprofit experiences
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+We welcome contributions! Please feel free to submit a Pull Request.
+
+## Acknowledgments 
+
+- Melissa API for nonprofit data
+- AgentQL for reliable web scraping
+- Our Uber driver for the inspiration
+- IrvineHacks 2025 for the opportunity
