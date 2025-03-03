@@ -34,12 +34,12 @@ export default function HomePage() {
             if (sortOption === "popular") {
                 filtered.sort((a, b) => b.likedBy.length - a.likedBy.length)
             } else if (sortOption === "recent") {
-                filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             } else if (sortOption === "trending") {
                 // Trending combines recency and popularity
                 filtered.sort((a, b) => {
-                    const recencyScoreA = Date.now() - a.createdAt.getTime()
-                    const recencyScoreB = Date.now() - b.createdAt.getTime()
+                    const recencyScoreA = Date.now() - new Date(a.createdAt).getTime()
+                    const recencyScoreB = Date.now() - new Date(b.createdAt).getTime()
                     const popularityScoreA = a.likedBy.length + a.messages.length * 2  // Comments weighted more for "trending"
                     const popularityScoreB = b.likedBy.length + b.messages.length * 2
 
