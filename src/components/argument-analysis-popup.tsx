@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, {useEffect, useState} from "react"
 import { Shield, Flame, AlertTriangle, CheckCircle, XCircle, Info } from "lucide-react"
 import {
   Dialog,
@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import Gemini from "@/lib/gemini/gemini";
+import {analyze} from "@/lib/actions/gemini";
 
 interface FallacyItem {
   name: string
@@ -44,39 +46,30 @@ export function ArgumentAnalysisPopup({
   onConfirm,
   argumentText,
   side,
-  fallacies = [],
-  factChecks = []
 }: ArgumentAnalysisProps) {
-  // Mock data for UI demonstration - will be replaced by Gemini integration
-  const mockFallacies: FallacyItem[] = fallacies.length > 0 ? fallacies : [
-    {
-      name: "Appeal to Emotion",
-      description: "Using emotional language to manipulate an audience's feelings instead of using valid reasoning.",
-      probability: 0.85,
-      examples: ["Your argument relies heavily on emotional language."]
-    },
-    {
-      name: "False Dichotomy",
-      description: "Presenting only two alternatives when more exist.",
-      probability: 0.65,
-      examples: ["You present only two possible outcomes when there may be others."]
-    }
-  ]
+  const [response, setResponse] = useState<string|null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const mockFactChecks: FactCheckItem[] = factChecks.length > 0 ? factChecks : [
-    {
-      statement: "Part of your argument contains inaccurate information.",
-      accurate: false,
-      explanation: "The statistics cited don't match current research findings.",
-      source: "Example source"
-    },
-    {
-      statement: "Your main claim appears to be supported by evidence.",
-      accurate: true,
-      explanation: "The core premise is generally consistent with available data.",
-      source: "Example source"
+  useEffect(() => {
+    if (response === null && !loading) {
+      setLoading(true)
+      analyze(argumentText).then((res) => {
+        setResponse(res)
+        setLoading(false)
+      })
     }
-  ]
+  }, [argumentText])
+
+  if (response === null) return;
+
+  const str = response.replace('```json', '').replaceAll('\n', '').replace("[]", "").replace('```', '').trim()
+  const obj = str.length == 0 ? [] : JSON.parse(str)
+  const fallacyItems = obj && obj.length ? obj : [{
+    name: "No Fallacies Found!",
+    description: "Nice job! You presented a sound argument."
+  }]
+
+  if (loading) return <></>;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -110,7 +103,7 @@ export function ArgumentAnalysisPopup({
               Potential Logical Fallacies
             </h3>
             <div className="space-y-4">
-              {mockFallacies.map((fallacy, index) => (
+              {fallacyItems.map((fallacy, index) => (
                 <div key={index} className="bg-gray-800 p-4 rounded-md">
                   <div className="flex justify-between items-start">
                     <h4 className="font-medium text-amber-400">
@@ -124,14 +117,14 @@ export function ArgumentAnalysisPopup({
                   <div className="mt-3 text-sm text-gray-300">
                     <strong>Detection:</strong>
                     <ul className="list-disc list-inside mt-1 ml-2 space-y-1 text-gray-400">
-                      {fallacy.examples.map((example, i) => (
+                      {fallacy.examples?.map((example, i) => (
                         <li key={i}>{example}</li>
                       ))}
                     </ul>
                   </div>
                 </div>
               ))}
-              {mockFallacies.length === 0 && (
+              {fallacyItems.length === 0 && (
                 <div className="bg-gray-800 p-4 rounded-md flex items-center">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
                   <p className="text-gray-300">No significant logical fallacies detected in your argument.</p>
@@ -141,36 +134,6 @@ export function ArgumentAnalysisPopup({
           </div>
 
           <Separator className="my-6 bg-gray-700" />
-
-          {/* Fact Checking Section */}
-          <div className="mb-6">
-            <h3 className="font-semibold text-lg flex items-center mb-3 text-white">
-              <Info className="mr-2 h-5 w-5 text-blue-500" />
-              Fact Checking Results
-            </h3>
-            <div className="space-y-4">
-              {mockFactChecks.map((fact, index) => (
-                <div key={index} className="p-4 rounded-md border border-gray-700 bg-gray-800">
-                  <div className="flex items-start">
-                    {fact.accurate ? (
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                    ) : (
-                      <XCircle className="h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
-                    )}
-                    <div>
-                      <p className="font-medium text-white">{fact.statement}</p>
-                      <p className="text-sm mt-1 text-gray-400">{fact.explanation}</p>
-                      {fact.source && (
-                        <p className="text-xs mt-2 text-gray-500">
-                          <span className="font-medium text-gray-400">Source:</span> {fact.source}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           <div className="flex justify-end space-x-2">
             <Button 

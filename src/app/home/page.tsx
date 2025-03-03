@@ -224,7 +224,7 @@ export default function HomePage() {
 
                     {!isLoading && !hasMore && visibleData.length > 0 && (
                         <div className="text-center py-8 text-muted-foreground text-sm">
-                            That's all folks!
+                            that's all the debates!
                         </div>
                     )}
                 </div>
