@@ -205,7 +205,7 @@ export default function HomePage() {
                     {visibleData.map((debate, index) => (
                         <DebateCard
                             key={debate.uniqueId || `${debate.id}-${index}`}
-                            id={debate.id}
+                            id={debate._id}
                             title={debate.title}
                             summary={debate.summary}
                             likes={debate.likes}
