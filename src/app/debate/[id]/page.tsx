@@ -86,12 +86,32 @@ export default function DebatePage() {
     
     if (!destroyMessage.trim() || !debate) return
     
-    await createMessage(destroyMessage, id, 'offense');
-
-    getDebate();
-    setDestroyMessage("")
+    // Also use the analysis popup for destroy messages
+    setCurrentAnalysis({
+      text: destroyMessage,
+      side: "destroy"
+    })
+    setAnalysisOpen(true)
   }
 
+  // Handle argument analysis confirmation
+  const handleConfirmSubmission = async () => {
+    if (!currentAnalysis || !debate) return
+    
+    // Close the analysis popup
+    setAnalysisOpen(false)
+    
+    if (currentAnalysis.side === "defend") {
+      await createMessage(defendMessage, id, 'defense');
+      getDebate();
+      setDefendMessage("");
+    } else {
+      await createMessage(destroyMessage, id, 'offense');
+      getDebate();
+      setDestroyMessage("");
+    }
+  }
+  
   async function handleLikeToggle() {
     if (liked) {
       await unlikePost(id);

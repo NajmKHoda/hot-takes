@@ -35,14 +35,55 @@ class Gemini {
             }
         }
 
-        return this.generateText(
-            "Analyze the following user message for logical fallacies and misinformation. "
-            + "Provide a concise analysis of the user's message, ideally around 3 bullet points or less. "
-            + "Provide your response STRICTLY in JSON (WITHOUT ANY FORMATTING) with a list of logical fallacies that the user's argument contains. "
-            + "JSON should have name of fallacy, description, probability(0-1) and specific example of where user uses the fallacy. "
-            + "If the user's argument is logically sound, return an empty json array. "
-            + "User message: " + message
-        );
+        // Create a comprehensive prompt for debate argument analysis
+        // This focuses specifically on detecting common logical fallacies in debate arguments
+        const prompt = `
+Analyze the following debate argument for logical fallacies. Your goal is to identify if the argument contains any common logical fallacies.
+
+Common fallacies to look for include:
+- Ad Hominem: Attacking the person instead of addressing their argument
+- Appeal to Authority: Claiming something is true because an authority figure says so
+- Appeal to Emotion: Using emotion instead of facts to persuade
+- Appeal to Popularity: Claiming something is true because many people believe it
+- Bandwagon Fallacy: Assuming something is good or true because it's popular
+- Black and White Fallacy: Presenting only two options when more exist
+- False Cause: Claiming one event caused another without sufficient evidence
+- Hasty Generalization: Drawing broad conclusions from limited evidence
+- Slippery Slope: Claiming one small step will lead to extreme consequences
+- Straw Man: Misrepresenting an opponent's argument to make it easier to attack
+- Red Herring: Introducing an irrelevant topic to divert attention
+- Tu Quoque: Avoiding criticism by turning it back on the accuser
+- Circular Reasoning: Using the conclusion as a premise
+- No True Scotsman: Redefining a term to exclude counterexamples
+
+For each fallacy you identify, provide:
+1. The name of the fallacy
+2. A description of the fallacy
+3. A probability score (0.0 to 1.0) indicating your confidence that this fallacy is present
+4. Specific examples/quotes from the argument that demonstrate the fallacy
+
+Return your analysis as a JSON array with this structure:
+[
+  {
+    "name": "Fallacy Name",
+    "description": "Brief description of what this fallacy is",
+    "probability": 0.75,
+    "examples": ["Direct quote or paraphrase showing the fallacy"]
+  }
+]
+
+If you don't find any significant logical fallacies, return an empty array: []
+
+Be strict in your analysis. Only identify clear fallacies, not just weak arguments.
+
+Argument to analyze: "${message}"`;
+
+        try {
+            return await this.generateText(prompt);
+        } catch (error) {
+            console.error("Failed to analyze argument:", error);
+            return "[]";
+        }
     }
 
     public static async generateText(prompt: string) {

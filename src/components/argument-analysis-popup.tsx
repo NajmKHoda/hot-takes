@@ -1,18 +1,16 @@
 "use client"
 
 import React, {useEffect, useState} from "react"
-import { Shield, Flame, AlertTriangle, CheckCircle, XCircle, Info } from "lucide-react"
+import { Shield, Flame, AlertTriangle, CheckCircle, Loader2 } from "lucide-react"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogClose
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import Gemini from "@/lib/gemini/gemini";
 import {analyze} from "@/lib/actions/gemini";
 
 interface FallacyItem {
@@ -22,22 +20,12 @@ interface FallacyItem {
   examples: string[]
 }
 
-interface FactCheckItem {
-  statement: string
-  accurate: boolean
-  explanation: string
-  source?: string
-}
-
 interface ArgumentAnalysisProps {
   isOpen: boolean
   onClose: () => void
   onConfirm: () => void
   argumentText: string
   side: "defend" | "destroy"
-  // Placeholder for future Gemini integration
-  fallacies?: FallacyItem[]
-  factChecks?: FactCheckItem[]
 }
 
 export function ArgumentAnalysisPopup({
@@ -47,29 +35,52 @@ export function ArgumentAnalysisPopup({
   argumentText,
   side,
 }: ArgumentAnalysisProps) {
-  const [response, setResponse] = useState<string|null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [fallacyItems, setFallacyItems] = useState<FallacyItem[]>([])
+  const [error, setError] = useState<string|null>(null)
 
+  // Reset state when the dialog opens with new text
   useEffect(() => {
-    if (response === null && !loading) {
+    if (isOpen && argumentText) {
       setLoading(true)
-      analyze(argumentText).then((res) => {
-        setResponse(res)
-        setLoading(false)
-      })
+      setFallacyItems([])
+      setError(null)
+      
+      // Call the Gemini API to analyze the argument
+      analyze(argumentText)
+        .then((res) => {
+          try {
+            // Clean up the response and parse the JSON
+            const cleanedResponse = res
+              .replace(/```json|```/g, '') // Remove markdown code blocks
+              .replace(/\n/g, '')          // Remove newlines
+              .trim();
+              
+            // Parse the JSON response
+            if (cleanedResponse && cleanedResponse !== '[]') {
+              const parsedFallacies = JSON.parse(cleanedResponse);
+              setFallacyItems(Array.isArray(parsedFallacies) ? parsedFallacies : []);
+            } else {
+              // No fallacies found
+              setFallacyItems([]);
+            }
+          } catch (err) {
+            console.error('Error parsing fallacy response:', err, res);
+            setError('Failed to parse analysis results');
+            setFallacyItems([]);
+          }
+        })
+        .catch((err) => {
+          console.error('Error analyzing argument:', err);
+          setError('Failed to analyze argument');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-  }, [argumentText])
+  }, [isOpen, argumentText]);
 
-  if (response === null) return;
-
-  const str = response.replace('```json', '').replaceAll('\n', '').replace("[]", "").replace('```', '').trim()
-  const obj = str.length == 0 ? [] : JSON.parse(str)
-  const fallacyItems = obj && obj.length ? obj : [{
-    name: "No Fallacies Found!",
-    description: "Nice job! You presented a sound argument."
-  }]
-
-  if (loading) return <></>;
+  if (!isOpen) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -86,7 +97,7 @@ export function ArgumentAnalysisPopup({
             </span>
           </DialogTitle>
           <DialogDescription className="text-gray-400">
-            AI analysis of your argument for logical fallacies and factual accuracy
+            AI analysis of your argument for logical fallacies
           </DialogDescription>
         </DialogHeader>
 
@@ -102,35 +113,63 @@ export function ArgumentAnalysisPopup({
               <AlertTriangle className="mr-2 h-5 w-5 text-amber-500" />
               Potential Logical Fallacies
             </h3>
-            <div className="space-y-4">
-              {fallacyItems.map((fallacy, index) => (
-                <div key={index} className="bg-gray-800 p-4 rounded-md">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-medium text-amber-400">
-                      {fallacy.name}
-                    </h4>
-                    <div className="text-xs font-medium px-2 py-1 rounded-full bg-amber-900 text-amber-400">
-                      {Math.round(fallacy.probability * 100)}% likely
+            
+            {loading && (
+              <div className="flex flex-col items-center justify-center p-8 text-gray-400">
+                <Loader2 className="h-8 w-8 animate-spin mb-2" />
+                <p>Analyzing your argument...</p>
+              </div>
+            )}
+            
+            {error && !loading && (
+              <div className="bg-red-900/30 border border-red-800 p-4 rounded-md text-red-200">
+                <p className="flex items-center">
+                  <AlertTriangle className="h-5 w-5 mr-2" />
+                  {error}
+                </p>
+                <p className="text-sm mt-2">Your argument will still be submitted, but we couldn&apos;t analyze it for fallacies.</p>
+              </div>
+            )}
+            
+            {!loading && !error && (
+              <div className="space-y-4">
+                {fallacyItems.length > 0 ? (
+                  fallacyItems.map((fallacy, index) => (
+                    <div key={index} className="bg-gray-800 p-4 rounded-md">
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-medium text-amber-400">
+                          {fallacy.name}
+                        </h4>
+                        {fallacy.probability && (
+                          <div className="text-xs font-medium px-2 py-1 rounded-full bg-amber-900 text-amber-400">
+                            {Math.round((fallacy.probability || 0) * 100)}% likely
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-sm mt-2 text-gray-400">{fallacy.description}</p>
+                      {fallacy.examples && fallacy.examples.length > 0 && (
+                        <div className="mt-3 text-sm text-gray-300">
+                          <strong>Detected in:</strong>
+                          <ul className="list-disc list-inside mt-1 ml-2 space-y-1 text-gray-400">
+                            {fallacy.examples.map((example, i) => (
+                              <li key={i}>{example}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-green-900/30 border border-green-800 p-4 rounded-md flex items-start">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-gray-300">No significant logical fallacies detected in your argument.</p>
+                      <p className="text-sm mt-1 text-gray-400">Your argument appears to be logically sound.</p>
                     </div>
                   </div>
-                  <p className="text-sm mt-2 text-gray-400">{fallacy.description}</p>
-                  <div className="mt-3 text-sm text-gray-300">
-                    <strong>Detection:</strong>
-                    <ul className="list-disc list-inside mt-1 ml-2 space-y-1 text-gray-400">
-                      {fallacy.examples?.map((example, i) => (
-                        <li key={i}>{example}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
-              {fallacyItems.length === 0 && (
-                <div className="bg-gray-800 p-4 rounded-md flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  <p className="text-gray-300">No significant logical fallacies detected in your argument.</p>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
 
           <Separator className="my-6 bg-gray-700" />
@@ -146,8 +185,16 @@ export function ArgumentAnalysisPopup({
             <Button 
               onClick={onConfirm}
               className={side === "defend" ? "bg-blue-600 hover:bg-blue-700" : "bg-red-600 hover:bg-red-700"}
+              disabled={loading}
             >
-              Proceed with Submission
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                "Proceed with Submission"
+              )}
             </Button>
           </div>
         </div>
