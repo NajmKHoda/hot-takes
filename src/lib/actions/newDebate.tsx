@@ -55,6 +55,8 @@ export async function getDebateById(id: string) {
             }
         })
         .lean() as any;
+    if (!postData) return null;
+
     postData.didLike = false;
 
     const user = await getUser();
