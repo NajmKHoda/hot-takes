@@ -1,7 +1,7 @@
-# Hot Takes
+# Hot Takes 🔥🔥🔥
 
-A platform connecting people with local nonprofits based on their interests and location, making community involvement more accessible than ever. Submitted to Hack @ UCI
-SCROLL DOWN FOR QUICK START
+Hot Takes is a debate app for important topics that guards against misinformation and logical fallacies, creating the optimal debate experience. Users can create debate threads with a predefined topic, which other users can click to begin a debate
+Each debate starts with an AI-generated prompt summarizing the topic. One person is randomly chosen to start. Before each user submits their response, it will be scanned by AI for weaknesses or misinformation, and the user will be given one more chance to revise their response before sending. Submitted to UCLA Hack on the Hill
 
 ## Project Overview 
 
