@@ -22,6 +22,7 @@ import { AnimatedBackground } from "@/components/animated-background"
 import { createMessage } from '@/lib/actions/createMessage'
 import { getDebateById, PopulatedDebate } from '@/lib/actions/newDebate'
 import { ArgumentAnalysisPopup } from "@/components/argument-analysis-popup"
+import { likePost, unlikePost } from '@/lib/actions/likes'
 
 interface Message {
   id: string
@@ -36,10 +37,10 @@ export default function DebatePage() {
   const id = params.id as string
   
   const [debate, setDebate] = useState<PopulatedDebate | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [error, setError] = useState<string | null>(null)
-  const [likeCount, setLikeCount] = useState(0)
-  const [hasLiked, setHasLiked] = useState(false)
   const [defendMessage, setDefendMessage] = useState("")
   const [destroyMessage, setDestroyMessage] = useState("")
   
@@ -51,9 +52,13 @@ export default function DebatePage() {
   } | null>(null)
   
   async function getDebate() {
-    const debate = await getDebateById(id)
-    if (!debate) setError('Debate not found');
-    setDebate(debate ? JSON.parse(debate) as PopulatedDebate : null);
+    const debateStr = await getDebateById(id)
+    if (!debateStr) setError('Debate not found');
+
+    const debateJSON = debateStr ? JSON.parse(debateStr) as PopulatedDebate : null;
+    setDebate(debateJSON);
+    setLiked(debateJSON?.didLike ?? false);
+    setLikeCount(debateJSON?.likedBy.length ?? 0);
   }
 
   // Poll for debate updates every ten seconds
@@ -81,28 +86,21 @@ export default function DebatePage() {
     
     if (!destroyMessage.trim() || !debate) return
     
-    // Show analysis popup before sending
-    setCurrentAnalysis({
-      text: destroyMessage,
-      side: "destroy"
-    })
-    setAnalysisOpen(true)
+    await createMessage(destroyMessage, id, 'offense');
+
+    getDebate();
+    setDestroyMessage("")
   }
-  
-  const handleConfirmSubmission = async () => {
-    if (!currentAnalysis || !debate) return
-    
-    // Close the analysis popup
-    setAnalysisOpen(false)
-    
-    if (currentAnalysis.side === "defend") {
-      await createMessage(defendMessage, id, 'defense');
-      getDebate();
-      setDefendMessage("");
+
+  async function handleLikeToggle() {
+    if (liked) {
+      await unlikePost(id);
+      setLiked(false);
+      setLikeCount(likeCount - 1);
     } else {
-      await createMessage(destroyMessage, id, 'offense');
-      getDebate();
-      setDestroyMessage("");
+      await likePost(id);
+      setLiked(true);
+      setLikeCount(likeCount + 1);
     }
   }
   
@@ -152,12 +150,12 @@ export default function DebatePage() {
               </div>
               <div 
                 className="flex items-center cursor-pointer hover:text-orange-500 transition-colors"
-                onClick={() => {/*TODO*/}}
+                onClick={handleLikeToggle}
               >
                 <ArrowUpCircle 
-                  className={`h-4 w-4 mr-1 ${hasLiked ? 'text-orange-500' : ''}`} 
+                  className={`h-4 w-4 mr-1 ${liked ? 'text-orange-500' : ''}`} 
                 />
-                <span className={`mr-4 ${hasLiked ? 'text-orange-500' : ''}`}>{likeCount}</span>
+                <span className={`mr-4 ${liked ? 'text-orange-500' : ''}`}>{likeCount}</span>
               </div>
               <div className="flex items-center">
                 <MessageCircle className="h-4 w-4 mr-1" />
@@ -193,7 +191,7 @@ export default function DebatePage() {
                         </Avatar>
                         <div className="flex-1">
                           <div className="flex items-center mb-1">
-                            <p className="font-medium text-sm mr-2">User</p>
+                            <p className="font-medium text-sm mr-2">{message.senderId.username}</p>
                             <span className="text-xs text-muted-foreground">
                               {formatDistanceToNow(message.timestamp, { addSuffix: true })}
                             </span>
@@ -250,7 +248,7 @@ export default function DebatePage() {
                         </Avatar>
                         <div className="flex-1">
                           <div className="flex items-center mb-1">
-                            <p className="font-medium text-sm mr-2">User</p>
+                            <p className="font-medium text-sm mr-2">{message.senderId.username}</p>
                             <span className="text-xs text-muted-foreground">
                               {formatDistanceToNow(message.timestamp, { addSuffix: true })}
                             </span>
