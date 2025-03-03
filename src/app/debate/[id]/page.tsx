@@ -111,24 +111,6 @@ export default function DebatePage() {
     setAnalysisOpen(true)
   }
 
-  // Handle argument analysis confirmation
-  const handleConfirmSubmission = async () => {
-    if (!currentAnalysis || !debate) return
-    
-    // Close the analysis popup
-    setAnalysisOpen(false)
-    
-    if (currentAnalysis.side === "defend") {
-      await createMessage(defendMessage, id, 'defense');
-      getDebate();
-      setDefendMessage("");
-    } else {
-      await createMessage(destroyMessage, id, 'offense');
-      getDebate();
-      setDestroyMessage("");
-    }
-  }
-  
   async function handleLikeToggle() {
     if (liked) {
       await unlikePost(id);
