@@ -29,7 +29,6 @@ export default function ClientProfile({username, email, bio, joinDate, numPosts}
         bio: bio || 'No bio found',
         joined: new Date(joinDate),
         debatesParticipated: numPosts,
-        debatesWon: 5
     })
 
     const handleSaveProfile = async (e: React.FormEvent) => {
@@ -90,15 +89,9 @@ export default function ClientProfile({username, email, bio, joinDate, numPosts}
                                     month: 'long', year: 'numeric'
                                 })}</p>
 
-                                <div className="grid grid-cols-2 gap-4 w-full mt-4">
-                                    <div className="text-center p-3 bg-background rounded-md border">
-                                        <p className="text-sm text-muted-foreground">Debates</p>
-                                        <p className="text-xl font-bold">{userProfile.debatesParticipated}</p>
-                                    </div>
-                                    <div className="text-center p-3 bg-background rounded-md border">
-                                        <p className="text-sm text-muted-foreground">Won</p>
-                                        <p className="text-xl font-bold">{userProfile.debatesWon}</p>
-                                    </div>
+                                <div className="w-full mt-4 text-center p-3 bg-background rounded-md border">
+                                    <p className="text-sm text-muted-foreground">Debates Participated</p>
+                                    <p className="text-xl font-bold">{userProfile.debatesParticipated}</p>
                                 </div>
                             </div>
 
@@ -229,8 +222,6 @@ export default function ClientProfile({username, email, bio, joinDate, numPosts}
                                         </Link>
                                     </Button>
                                 </div>
-
-
                             </div>
                         </TabsContent>
                     </Tabs>
