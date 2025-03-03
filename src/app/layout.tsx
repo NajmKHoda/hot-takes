@@ -33,6 +33,20 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
+        <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                window.ENV_GEMINI_API_KEY = "${process.env.NEXT_PUBLIC_GEMINI_API_KEY || ''}";
+                console.log("API key status:", window.ENV_GEMINI_API_KEY ? "Available" : "Not available");
+              } catch (e) {
+                console.error("Error setting up environment variables:", e);
+              }
+            `,
+          }}
+        />
+        </head>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >

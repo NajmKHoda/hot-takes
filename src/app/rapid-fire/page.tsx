@@ -10,6 +10,7 @@ import {Input} from "@/components/ui/input"
 import {AnimatedBackground} from "@/components/animated-background"
 import {Avatar, AvatarFallback} from "@/components/ui/avatar"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
+import {generateDebateResponse} from "@/lib/api-client"
 
 // Sample active debate topics that users can join - each with exactly 1 person waiting
 const activeTopics = [
@@ -79,6 +80,9 @@ export default function RapidFirePage() {
     const [timeLeft, setTimeLeft] = useState(180)
     const [debateStarted, setDebateStarted] = useState(false)
     const [activeTab, setActiveTab] = useState("create")
+    const [shouldOpponentRespond, setShouldOpponentRespond] = useState(false)
+    const [processingResponse, setProcessingResponse] = useState(false)
+    const [apiError, setApiError] = useState<string | null>(null)
 
     // Initialize the custom topic field with a suggestion
     useEffect(() => {
@@ -86,45 +90,119 @@ export default function RapidFirePage() {
         setCustomTopic(randomSuggestion)
     }, [])
 
-    // Simulated typing indicator and responses
+    // Modified effect to use API client for Gemini responses
     useEffect(() => {
-        if (!isJoined || !debateStarted) return
+        if (!isJoined || !debateStarted || !shouldOpponentRespond || processingResponse) return
 
-        // Simulate opponent typing
-        const typingTimeout = setTimeout(() => {
-            setOpponentTyping(true)
+        const generateResponse = async () => {
+            try {
+                setOpponentTyping(true)
+                setProcessingResponse(true)
 
-            // Simulate opponent response
-            const responseTimeout = setTimeout(() => {
-                setOpponentTyping(false)
+                console.log('Generating response for topic:', currentTopic);
 
-                const responses = [
-                    "I strongly disagree. Here's why...",
-                    "That's an interesting point, but have you considered...",
-                    "The evidence doesn't support that conclusion because...",
-                    "I see your argument, however I think...",
-                    "That's a common misconception. Actually...",
-                    "While I understand your perspective, I believe..."
-                ]
+                // Get all messages except system messages
+                const messageHistory = messages
+                    .filter(msg => msg.content.indexOf("You've been matched!") === -1)
+                    .map(msg => ({
+                        content: msg.content,
+                        sender: msg.sender
+                    }));
 
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+                // Get the user's latest message
+                const userLatestMessage = messageHistory
+                    .filter(msg => msg.sender === "user")
+                    .slice(-1)[0]?.content || "";
+
+                if (!userLatestMessage) {
+                    console.log('No user message found, skipping response generation');
+                    setOpponentTyping(false);
+                    setProcessingResponse(false);
+                    setShouldOpponentRespond(false);
+                    return;
+                }
+
+                console.log('Using API client to get debate response');
+                
+                try {
+                    // Call the API client instead of directly accessing the endpoint
+                    const responseText = await generateDebateResponse(
+                        userLatestMessage,
+                        currentTopic,
+                        messageHistory.slice(0, -1) // All messages except the latest user message
+                    );
+                    
+                    console.log('✅ Got response from API client:', {
+                        responseLength: responseText?.length || 0
+                    });
+                    
+                    // Clear any previous errors
+                    setApiError(null);
+                    
+                    // Add the response after a realistic delay
+                    setTimeout(() => {
+                        setOpponentTyping(false);
+                        setProcessingResponse(false);
+                        setShouldOpponentRespond(false);
+
+                        setMessages(prev => [
+                            ...prev,
+                            {
+                                id: `opponent-${Date.now()}`,
+                                content: responseText,
+                                sender: "opponent",
+                                timestamp: new Date()
+                            }
+                        ]);
+                    }, 1500);
+                    return;
+                } catch (error) {
+                    console.error("Error in API client:", error);
+                    setApiError("Failed to get debate response. Using fallback response instead.");
+                    handleFallbackResponse();
+                }
+            } catch (innerError) {
+                console.error("Error in API response:", innerError);
+                setApiError("Failed to get debate response. Using fallback response instead.");
+                handleFallbackResponse();
+            }
+        };
+
+        const handleFallbackResponse = () => {
+            console.log('⚠️ Using fallback response due to API failure');
+            
+            // Fallback responses if the API call fails
+            const fallbackResponses = [
+                "I disagree with your position. The evidence suggests otherwise.",
+                "That's an interesting perspective, but it fails to address the core issue.",
+                "Your argument overlooks several critical factors that contradict your conclusion.",
+                "While I understand your point, there are stronger counterarguments worth considering.",
+                "That reasoning has some logical gaps that undermine your overall position."
+            ];
+            
+            const fallbackResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+            console.log('Selected fallback response:', fallbackResponse);
+            
+            // Add the fallback response after a delay
+            setTimeout(() => {
+                setOpponentTyping(false);
+                setProcessingResponse(false);
+                setShouldOpponentRespond(false);
 
                 setMessages(prev => [
                     ...prev,
                     {
                         id: `opponent-${Date.now()}`,
-                        content: randomResponse,
+                        content: fallbackResponse,
                         sender: "opponent",
                         timestamp: new Date()
                     }
-                ])
-            }, 3000)
+                ]);
+            }, 1500);
+        };
 
-            return () => clearTimeout(responseTimeout)
-        }, 5000)
-
-        return () => clearTimeout(typingTimeout)
-    }, [messages, isJoined, debateStarted])
+        generateResponse();
+    }, [shouldOpponentRespond, isJoined, debateStarted, messages, currentTopic, processingResponse]);
 
     // Countdown timer for debate
     useEffect(() => {
@@ -201,6 +279,7 @@ export default function RapidFirePage() {
     const sendMessage = () => {
         if (!message.trim()) return
 
+        // Add user message
         setMessages(prev => [
             ...prev,
             {
@@ -212,6 +291,9 @@ export default function RapidFirePage() {
         ])
 
         setMessage("")
+        
+        // Trigger opponent response after user sends a message
+        setShouldOpponentRespond(true)
     }
 
     const formatTime = (seconds: number) => {
@@ -414,6 +496,14 @@ export default function RapidFirePage() {
                         </div>
 
                         <div className="flex-1 overflow-y-auto py-2 space-y-4">
+                            {/* Error message banner if API fails */}
+                            {apiError && (
+                                <div className="bg-red-500/10 border border-red-500/50 text-red-600 dark:text-red-400 p-3 rounded-md mb-3 text-sm">
+                                    <p className="font-medium">API Error</p>
+                                    <p>{apiError}</p>
+                                </div>
+                            )}
+                
                             {messages.map(msg => (
                                 <div
                                     key={msg.id}

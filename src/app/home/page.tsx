@@ -208,9 +208,9 @@ export default function HomePage() {
                             id={debate._id.toString()}
                             title={debate.title}
                             summary={debate.summary}
-                            likes={debate.likedBy.length}
+                            likes={(debate.likedBy && Array.isArray(debate.likedBy)) ? debate.likedBy.length : 0}
                             didLike={debate.didLike}
-                            comments={debate.messages.length}
+                            comments={(debate.messages && Array.isArray(debate.messages)) ? debate.messages.length : 0}
                             createdAt={debate.createdAt}
                         />
                     ))}
