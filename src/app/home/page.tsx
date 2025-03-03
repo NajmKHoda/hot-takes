@@ -30,9 +30,9 @@ export default function HomePage() {
     useEffect(() => {
         async function filterDebates() {
             const json = await loadDebates();
-            const filtered = [...JSON.parse(json)];
+            const filtered = JSON.parse(json) as (IPost & { didLike: boolean })[];
             if (sortOption === "popular") {
-                filtered.sort((a, b) => b.likes - a.likes)
+                filtered.sort((a, b) => b.likedBy.length - a.likedBy.length)
             } else if (sortOption === "recent") {
                 filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
             } else if (sortOption === "trending") {
@@ -40,8 +40,8 @@ export default function HomePage() {
                 filtered.sort((a, b) => {
                     const recencyScoreA = Date.now() - a.createdAt.getTime()
                     const recencyScoreB = Date.now() - b.createdAt.getTime()
-                    const popularityScoreA = a.likes + a.comments * 2  // Comments weighted more for "trending"
-                    const popularityScoreB = b.likes + b.comments * 2
+                    const popularityScoreA = a.likedBy.length + a.messages.length * 2  // Comments weighted more for "trending"
+                    const popularityScoreB = b.likedBy.length + b.messages.length * 2
 
                     // Lower recency score (more recent) is better
                     const scoreA = popularityScoreA / (Math.sqrt(recencyScoreA))
