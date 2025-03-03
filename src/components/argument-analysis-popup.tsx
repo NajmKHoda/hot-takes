@@ -110,7 +110,7 @@ export function ArgumentAnalysisPopup({
                       {fallacy.name}
                     </h4>
                     <div className="text-xs font-medium px-2 py-1 rounded-full bg-amber-900 text-amber-400">
-                      {Math.round(fallacy.probability * 100)}% likely
+                      {Math.round((fallacy.probability ?? 1) * 100)}% likely
                     </div>
                   </div>
                   <p className="text-sm mt-2 text-gray-400">{fallacy.description}</p>
