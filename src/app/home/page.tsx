@@ -18,7 +18,7 @@ type SortOption = "popular" | "recent" | "trending"
 
 export default function HomePage() {
     const [sortOption, setSortOption] = useState<SortOption>("popular")
-    const [sortedDebates, setSortedDebates] = useState<IPost[]>([])
+    const [sortedDebates, setSortedDebates] = useState<(IPost & { didLike: boolean})[]>([])
     const [searchQuery, setSearchQuery] = useState("")
     const [showMobileSearch, setShowMobileSearch] = useState(false)
 
@@ -204,12 +204,13 @@ export default function HomePage() {
                 <div className="space-y-4">
                     {visibleData.map((debate, index) => (
                         <DebateCard
-                            key={debate.uniqueId || `${debate.id}-${index}`}
-                            id={debate._id}
+                            key={`${debate.id}-${index}`}
+                            id={debate._id.toString()}
                             title={debate.title}
                             summary={debate.summary}
-                            likes={debate.likes}
-                            comments={debate.comments}
+                            likes={debate.likedBy.length}
+                            didLike={debate.didLike}
+                            comments={debate.messages.length}
                             createdAt={debate.createdAt}
                         />
                     ))}

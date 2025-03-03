@@ -5,6 +5,7 @@ import Link from "next/link"
 import {useState} from "react"
 import {ArrowUpCircle, Clock, MessageCircle} from "lucide-react"
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card"
+import { likePost, unlikePost } from '@/lib/actions/likes'
 
 export interface DebateCardProps {
     id: string
@@ -12,6 +13,7 @@ export interface DebateCardProps {
     summary: string
     topic?: string
     likes: number
+    didLike: boolean
     comments: number
     createdAt: Date
 }
@@ -22,12 +24,13 @@ export function DebateCard({
                                summary,
                                topic,
                                likes,
+                               didLike,
                                comments,
                                createdAt
                            }: DebateCardProps) {
     const timeAgo = formatDistanceToNow(createdAt ?? 0, {addSuffix: true})
     const [likeCount, setLikeCount] = useState(likes)
-    const [hasLiked, setHasLiked] = useState(false)
+    const [hasLiked, setHasLiked] = useState(didLike)
 
     const handleLike = (e: React.MouseEvent) => {
         e.preventDefault()
@@ -36,13 +39,12 @@ export function DebateCard({
         if (!hasLiked) {
             setLikeCount(prev => prev + 1)
             setHasLiked(true)
+            likePost(id)
         } else {
             setLikeCount(prev => prev - 1)
             setHasLiked(false)
+            unlikePost(id)
         }
-
-        // In a real app, you would make an API call here to update the like count
-        // Example: api.updateLikes(id, hasLiked ? 'unlike' : 'like')
     }
 
     return (
