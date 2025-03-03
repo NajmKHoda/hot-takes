@@ -53,3 +53,9 @@ export async function getDebateById(id: string) {
         })
         .lean());
 }
+
+export async function loadDebates() {
+    return JSON.stringify(await Post
+        .find()
+        .lean());
+}
