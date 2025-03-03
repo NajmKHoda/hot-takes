@@ -162,22 +162,10 @@ export default function ClientProfile({username, email, bio, joinDate, numPosts}
                 </div>
 
                 <div className="mt-8">
-                    <Tabs defaultValue="debates">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="debates">your debates</TabsTrigger>
+                    <Tabs defaultValue="settings">
+                        <TabsList className="grid w-full grid-cols-1">
                             <TabsTrigger value="settings">account settings</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="debates" className="mt-4">
-                            <div className="bg-card border rounded-lg p-6">
-                                <p className="text-center text-muted-foreground py-8">
-                                    you haven&apos;t participated in any debates yet.
-                                    <br/>
-                                    <Link href="/home" className="text-orange-500 hover:underline mt-2 inline-block">
-                                        find a debate to join
-                                    </Link>
-                                </p>
-                            </div>
-                        </TabsContent>
                         <TabsContent value="settings" className="mt-4">
                             <div className="bg-card border rounded-lg p-6 space-y-6">
                                 <div>
