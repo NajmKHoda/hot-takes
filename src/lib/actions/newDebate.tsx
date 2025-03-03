@@ -78,7 +78,7 @@ export async function loadDebates() {
             ...post,
             didLike: false
         };
-        
+
         if (user) {
             postWithLike.didLike = post.likedBy.some(id => user._id.equals(id));
         }
