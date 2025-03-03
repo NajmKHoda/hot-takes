@@ -58,7 +58,7 @@ export async function getDebateById(id: string) {
     postData.didLike = false;
 
     const user = await getUser();
-    if (user) {
+    if (user && postData.likedBy && Array.isArray(postData.likedBy)) {
         postData.didLike = postData.likedBy.some(x => user._id.equals(x));
     }
 
@@ -79,7 +79,7 @@ export async function loadDebates() {
             didLike: false
         };
         
-        if (user) {
+        if (user && post.likedBy && Array.isArray(post.likedBy)) {
             postWithLike.didLike = post.likedBy.some(id => user._id.equals(id));
         }
         
