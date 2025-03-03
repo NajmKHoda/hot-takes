@@ -6,28 +6,20 @@ Each debate starts with an AI-generated prompt summarizing the topic. One person
 ## Project Overview 
 
 ### Inspiration
-On the way to Seaside in an Uber car, our retired driver's wish to give back more to his community inspired this project. His words, "I wish I could've done more work for my own community," sparked our mission to make community involvement more accessible.
+Just another dull day on reddit, scrolling r/AITAH and r/roastme for hours, inflicting small amounts of dopamine to your already fried brain receptors. "Trump and Zelensky—an intense exchange of fiery words and bold opinions." Into the comments, the insults flew, hurled from one side of the debate to the other. Overwhelmed by the raging debate, I scrolled to the top and continued doom scrolling... WAIT? 30K upvotes? That's pretty good... Come to think of it, these fierce controversial topics always do well on social media... The world needed a platform where people could passionately voice their thoughts without fear of censorship. That’s when the idea for our app was born: a place where opinions clash, sparks fly, and the world can finally engage in the most outrageous debates. And thus, Hot Topic was born—because sometimes, you need a bombshell take to ignite a conversation!
 
 ### What it does 
 
-Unity Nonprofits helps users:
-- Find local nonprofits based on zip code and interests
-- Save favorite organizations
-- Get instant access to nonprofit information
-- Connect with community service opportunities
+Hot Takes helps users:
+- 
 
 ### Technical Stack 
 
 Frontend:
-- Next.js with TypeScript
-- TailwindCSS for styling
-- Session storage for state management
+- bla bla bla
 
 Backend:
-- FastAPI (Python)
-- Melissa API integration
-- Playwright with AgentQL for data scraping
-- nGrok for API tunneling
+- bla bla bla
 
 ### Features 
 
