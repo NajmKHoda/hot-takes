@@ -1,8 +1,9 @@
 'use server';
 
-import {redirect} from 'next/navigation';
-import {Post} from '../database/post';
-import {getUser} from '../session';
+import { redirect } from 'next/navigation';
+import { Post } from '../database/post';
+import { getUser } from '../session';
+import { isObjectIdOrHexString } from 'mongoose';
 
 export async function createDebate(title: string, summary: string, firstMessage: string) {
     const user = await getUser();
@@ -23,11 +24,32 @@ export async function createDebate(title: string, summary: string, firstMessage:
     redirect(`/debate/${post._id}`)
 }
 
-export async function loadDebates() {
-    return JSON.stringify(await Post.find().lean() as Post[]);
+export interface PopulatedDebate {
+    _id: string;
+    title: string;
+    summary: string;
+    messages: {
+        senderId: {
+            username: string;
+        };
+        contents: string;
+        timestamp: Date;
+        side: 'offense' | 'defense';
+    }[];
 }
 
-export async function loadDebate(id: string) {
-    if (!id || id.length != 24) return null;
-    return JSON.stringify(await Post.findById(id).lean() as Post);
+export async function getDebateById(id: string) {
+    if (!isObjectIdOrHexString(id)) return null;
+
+    return JSON.stringify(await Post
+        .findById(id)
+        .populate({
+            path: 'messages',
+            select: 'senderId contents timestamp side',
+            populate: {
+                path: 'senderId',
+                select: 'username'
+            }
+        })
+        .lean());
 }
