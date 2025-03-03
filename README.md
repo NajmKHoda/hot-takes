@@ -45,7 +45,7 @@ Backend:
 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/hot-takes.git
-cd unnamed-hoth-xii
+cd hot-takes
 ```
 
 2. Install dependencies:
