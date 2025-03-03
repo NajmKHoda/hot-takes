@@ -27,11 +27,10 @@ Backend:
 
 ### Features 
 
-- Zip code-based nonprofit search
-- Interest-based filtering
-- Favorite organization saving
-- Real-time nonprofit information
-- Interactive loading screen with LeBron James highlights
+- Debate posts with live responses from other users
+- In-depth AI feedback on argument strength, logical fallacies
+- One-on-one conversations with an argumentative AI
+- Modern, sleek UI that enhances the user experience
 
 ## Quick Start 
 
