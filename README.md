@@ -16,10 +16,14 @@ Hot Takes helps users:
 ### Technical Stack 
 
 Frontend:
-- bla bla bla
+- Next.js with TypeScript
+- TailwindCSS for styling
 
 Backend:
-- bla bla bla
+- MongoDB for database
+- Gemini API
+- JSON Web Tokens for session authentication
+- `bcrypt` library for password encryption
 
 ### Features 
 
@@ -33,70 +37,53 @@ Backend:
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- Python 3.8+
 - npm or yarn
+- MongoDB database
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/toomzheng/unity-nonprofits.git
-cd unity-nonprofits
+git clone https://github.com/yourusername/hot-takes.git
+cd unnamed-hoth-xii
 ```
 
-2. Install frontend dependencies:
+2. Install dependencies:
 ```bash
-cd irvinehacks2
 npm install
+# or
+yarn install
 ```
 
-3. Install backend dependencies:
+3. Set up environment variables:
+- Copy the `.env.example` file to `.env`:
 ```bash
-cd backend
-pip install -r requirements.txt
+cp .env.example .env
 ```
+- Update the values in `.env`:
+  - Add your MongoDB connection string
+  - Set session configuration values
+  - Add your Gemini API key
 
-4. Set up environment variables:
-- Create a `.env` file in the backend directory
-- Add required environment variables:
-```env
-AGENTQL_API_KEY=your_agentql_key
-PERPLEXITY_API_KEY=your_perplexity_key
-EMAIL=your_melissa_email
-PASSWORD='your_melissa_password'
-^ make sure to create an account on melissa first.
-```
-
-5. Start the development servers:
-
-Frontend:
+4. Start the development server:
 ```bash
 npm run dev
+# or
+yarn dev
 ```
 
-Backend:
-```bash
-cd backend
-ngrok http 8000
-uvicorn app:app --reload
-python login.py
-```
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
 ## Future Development 
 
-- User authentication system
+- OAuth integration
 - Enhanced API efficiency
-- Community blog platform
-- Event organization features
-- Review system for nonprofit experiences
+- More in-depth analysis of logical fallacies
+- Search function for misinformation check
 
 ## Contributing 
 
 We welcome contributions! Please feel free to submit a Pull Request.
 
-## Acknowledgments 
 
-- Melissa API for nonprofit data
-- AgentQL for reliable web scraping
-- Our Uber driver for the inspiration
-- IrvineHacks 2025 for the opportunity
+Thanks to Hack on the Hill for this opportunity.
