@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { AnimatedBackground } from "@/components/animated-background"
 import { createMessage } from '@/lib/actions/createMessage'
 import { getDebateById, PopulatedDebate } from '@/lib/actions/newDebate'
+import { ArgumentAnalysisPopup } from "@/components/argument-analysis-popup"
 
 interface Message {
   id: string
@@ -42,6 +43,13 @@ export default function DebatePage() {
   const [defendMessage, setDefendMessage] = useState("")
   const [destroyMessage, setDestroyMessage] = useState("")
   
+  // Analysis popup state
+  const [analysisOpen, setAnalysisOpen] = useState(false)
+  const [currentAnalysis, setCurrentAnalysis] = useState<{
+    text: string;
+    side: "defend" | "destroy";
+  } | null>(null)
+  
   async function getDebate() {
     const debate = await getDebateById(id)
     if (!debate) setError('Debate not found');
@@ -60,10 +68,12 @@ export default function DebatePage() {
     
     if (!defendMessage.trim() || !debate) return
     
-    await createMessage(defendMessage, id, 'defense');
-
-    getDebate();
-    setDefendMessage("");
+    // Show analysis popup before sending
+    setCurrentAnalysis({
+      text: defendMessage,
+      side: "defend"
+    })
+    setAnalysisOpen(true)
   }
   
   const handleSubmitDestroy = async (e: React.FormEvent) => {
@@ -71,10 +81,29 @@ export default function DebatePage() {
     
     if (!destroyMessage.trim() || !debate) return
     
-    await createMessage(destroyMessage, id, 'offense');
-
-    getDebate();
-    setDestroyMessage("")
+    // Show analysis popup before sending
+    setCurrentAnalysis({
+      text: destroyMessage,
+      side: "destroy"
+    })
+    setAnalysisOpen(true)
+  }
+  
+  const handleConfirmSubmission = async () => {
+    if (!currentAnalysis || !debate) return
+    
+    // Close the analysis popup
+    setAnalysisOpen(false)
+    
+    if (currentAnalysis.side === "defend") {
+      await createMessage(defendMessage, id, 'defense');
+      getDebate();
+      setDefendMessage("");
+    } else {
+      await createMessage(destroyMessage, id, 'offense');
+      getDebate();
+      setDestroyMessage("");
+    }
   }
   
   if (loading) {
@@ -258,6 +287,21 @@ export default function DebatePage() {
           </div>
         </div>
       </main>
+
+      {/* Argument Analysis Popup */}
+      {currentAnalysis && (
+        <ArgumentAnalysisPopup 
+          isOpen={analysisOpen}
+          onClose={() => {
+            setAnalysisOpen(false)
+            // Optional: you could implement a system where closing means submit or cancel
+            // For now, we'll just close the popup without submitting
+          }}
+          argumentText={currentAnalysis.text}
+          side={currentAnalysis.side}
+          onConfirm={handleConfirmSubmission}
+        />
+      )}
     </div>
   )
 }
