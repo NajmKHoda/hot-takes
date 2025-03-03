@@ -80,23 +80,6 @@ export default function DebatePage() {
     })
     setAnalysisOpen(true)
   }
-
-  const handleConfirmSubmission = async () => {
-    if (!currentAnalysis || !debate) return
-
-    // Close the analysis popup
-    setAnalysisOpen(false)
-
-    if (currentAnalysis.side === "defend") {
-      await createMessage(defendMessage, id, 'defense');
-      getDebate();
-      setDefendMessage("");
-    } else {
-      await createMessage(destroyMessage, id, 'offense');
-      getDebate();
-      setDestroyMessage("");
-    }
-  }
   
   const handleSubmitDestroy = async (e: React.FormEvent) => {
     e.preventDefault()
